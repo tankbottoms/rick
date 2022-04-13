@@ -1,0 +1,39 @@
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Swap the comments on the following lines if you don't wish to use zero-installs
+# Documentation here: https://yarnpkg.com/features/zero-installs
+!.yarn/cache
+#.pnp.*
+
+
+node_modules
+.env
+
+# Hardhat files
+cache
+artifacts
+deployments/localhost/**
+
+# Mac OSX
+.DS_Store
+
+# Code coverage reports
+coverage/
+coverage.json
+
+*.txt
+scripts/error.json
+# scripts/resume.json
+
+# VSCode
+workspace.code-workspace
+ignore-space
+
+.pnp.cjs
+.pnp.loader.mjs
+
