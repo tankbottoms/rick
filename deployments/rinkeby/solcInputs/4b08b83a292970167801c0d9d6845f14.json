@@ -1,0 +1,39 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/interfaces/StorageInterface.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity 0.8.6;\n\ninterface StorageInterface {\n  function append(uint8[] memory buffer) external;\n\n  function getBytes() external view returns (bytes memory);\n\n  function setName(string memory _name) external;\n}\n"
+    },
+    "contracts/Storage.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity 0.8.6;\nimport {StorageInterface} from './interfaces/StorageInterface.sol';\n\ncontract Storage is StorageInterface {\n  string public name;\n  uint8[] private _arrayBuffer;\n\n  function append(uint8[] memory buffer) public override {\n    uint8[] memory newArray = new uint8[](_arrayBuffer.length + buffer.length);\n    for (uint256 i = 0; i < _arrayBuffer.length; i++) {\n      newArray[i] = _arrayBuffer[i];\n    }\n    for (uint256 i = 0; i < buffer.length; i++) {\n      newArray[_arrayBuffer.length + i] = buffer[i];\n    }\n    _arrayBuffer = newArray;\n  }\n\n  function getBytes() public view override returns (bytes memory) {\n    bytes memory _bytes = new bytes(_arrayBuffer.length);\n    for (uint256 i = 0; i < _arrayBuffer.length; i++) {\n      _bytes[i] = bytes1(uint8(_arrayBuffer[i]));\n    }\n    return _bytes;\n  }\n\n  function setName(string memory _name) public override {\n    name = _name;\n  }\n}\n"
+    }
+  },
+  "settings": {
+    "metadata": {
+      "bytecodeHash": "none",
+      "useLiteralContent": true
+    },
+    "optimizer": {
+      "enabled": true,
+      "runs": 800
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    }
+  }
+}

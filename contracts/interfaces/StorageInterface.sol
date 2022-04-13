@@ -2,7 +2,9 @@
 pragma solidity 0.8.6;
 
 interface StorageInterface {
-  function set(bytes memory _text) external;
+  function append(uint8[] memory buffer) external;
 
-  function get() external view returns (bytes memory);
+  function getBytes() external view returns (bytes memory);
+
+  function setName(string memory _name) external;
 }
