@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.6;
 import {StorageInterface} from './interfaces/StorageInterface.sol';
+import {SSTORE2} from './libraries/SSTORE2.sol';
 
 contract Storage is StorageInterface {
-  mapping(string => string) private _data;
+  address private pointer;
 
-  function set(string memory key, string memory value) public override {
-    _data[key] = value;
+  function set(bytes memory _bytes) public override {
+    pointer = SSTORE2.write(_bytes);
   }
 
-  function get(string memory key) public view override returns (string memory) {
-    return _data[key];
+  function get() public view override returns (bytes memory) {
+    return SSTORE2.read(pointer);
   }
 }

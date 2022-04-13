@@ -34,6 +34,7 @@
     "hardhat-deploy": "^0.11.4",
     "prettier": "^2.4.0",
     "prettier-plugin-solidity": "^1.0.0-beta.19",
+    "rimraf": "^3.0.2",
     "solhint": "^3.3.6",
     "solhint-plugin-prettier": "^0.0.5"
   },
