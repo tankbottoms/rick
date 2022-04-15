@@ -40,15 +40,16 @@
   },
   "scripts": {
     "chain": "hardhat node",
-    "account": "hardhat account",
+    "accounts": "hardhat accounts",
     "test": "mocha './test/**/*.test.js' -r esm --bail",
-    "coverage": "node --require esm ./node_modules/.bin/hardhat coverage --network hardhat",
     "clean": "rimraf ./cache && rimraf ./artifacts",
     "compile": "yarn clean && hardhat compile",
     "pretty": "prettier --write \"./**/*.{js,jsx,json,sol}\"",
+    "dev": "npx hardhat deploy --network hardhat",
     "deploy:rinkeby": "hardhat deploy --network rinkeby",
     "deploy:kovan": "hardhat deploy --network kovan",
     "deploy:mainnet": "hardhat deploy --network mainnet",
+    "deploy:mumbai": "hardhat deploy --network mumbai",
     "verify:rinkeby": "hardhat etherscan-verify --network rinkeby",
     "verify:kovan": "hardhat etherscan-verify --network kovan",
     "verify:mainnet": "hardhat etherscan-verify --network mainnet"
