@@ -6,7 +6,7 @@ import { resolve } from 'path';
 import { TransactionRequest, TransactionResponse } from '@ethersproject/abstract-provider';
 
 const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId }) => {
-  const buffer = readFileSync(resolve(__dirname, '../buffer/rick-roll-15s.mp3'));
+  const buffer = readFileSync(resolve(__dirname, '../buffer/rick-roll-16s.mp3'));
   const arrayBuffer = Array.from(buffer);
   const bytes = arrayBuffer.length;
   console.log('Audio Size (KB):', bytes / 1024);
