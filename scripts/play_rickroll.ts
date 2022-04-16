@@ -14,8 +14,7 @@ async function main() {
   );
 
   const str = (await contract.getRickRoll()) as string;
-  console.log(str);
-  execSync(`/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome "${str}"`);
+  console.log(str.length);
 }
 
 /* We recommend this pattern to be able to use async/await everywhere

@@ -45,7 +45,7 @@
     "clean": "rimraf ./cache && rimraf ./artifacts",
     "compile": "yarn clean && hardhat compile",
     "pretty": "prettier --write \"./**/*.{js,jsx,json,sol}\"",
-    "dev": "npx hardhat deploy --network hardhat",
+    "dev": "npx hardhat deploy",
     "deploy:rinkeby": "hardhat deploy --network rinkeby",
     "deploy:kovan": "hardhat deploy --network kovan",
     "deploy:mainnet": "hardhat deploy --network mainnet",

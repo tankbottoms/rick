@@ -65,7 +65,7 @@ const hardhatConfig: HardhatUserConfig = {
       accounts: [
         {
           privateKey: PRIVATE_KEY || '',
-          balance: utils.parseEther('100').toString(),
+          balance: utils.parseEther('100000').toString(),
         },
       ],
     },

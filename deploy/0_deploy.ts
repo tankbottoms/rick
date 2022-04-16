@@ -1,73 +1,81 @@
-// import { ethers } from 'hardhat';
 import { BigNumber } from 'ethers';
 import { ethers } from 'hardhat';
 import { DeployFunction } from 'hardhat-deploy/types';
-import rickRoll from '../buffer/rickRoll';
-import rickRoll256 from '../buffer/rickRoll32Bytes';
-import { execSync } from 'child_process';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+import { TransactionRequest, TransactionResponse } from '@ethersproject/abstract-provider';
 
 const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId }) => {
-  // console.log(rickRoll);
-  // const uint256ArrayBuffer: string[] = [];
-  // for (let i = 0; i < rickRoll.length; i += 32) {
-  //   let hex = '';
-  //   for (let b = 0; b < 32; b++) {
-  //     const temp = (rickRoll[i + b] || 0).toString(16).padStart(2, '0');
-  //     hex = temp + hex;
-  //   }
-  //   uint256ArrayBuffer.push(`0x${hex}`);
-  // }
-  // console.log(uint256ArrayBuffer);
-  // (await import('fs')).default.writeFileSync('./buffer256.json', JSON.stringify(uint256ArrayBuffer));
+  const buffer = readFileSync(resolve(__dirname, '../buffer/rick-roll-15s.mp3'));
+  const arrayBuffer = Array.from(buffer);
+  const bytes = arrayBuffer.length;
+  console.log('Audio Size (KB):', bytes / 1024);
+  const uint256ArrayBuffer: string[] = [];
+  for (let i = 0; i < arrayBuffer.length; i += 32) {
+    let hex = '';
+    for (let b = 0; b < 32; b++) {
+      const temp = (arrayBuffer[i + b] || 0).toString(16).padStart(2, '0');
+      hex = temp + hex;
+    }
+    uint256ArrayBuffer.push(`0x${hex}`);
+  }
+  /************************************************************************************/
   const chainId = await getChainId();
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  const arrayBuffer = rickRoll256.slice(0).map((num) => BigNumber.from(num).toHexString());
+  const arrayBuffer256 = uint256ArrayBuffer
+    .slice(0)
+    .map((num) => BigNumber.from(num).toHexString());
 
   const baseDeployArgs = {
     from: deployer,
     log: true,
     skipIfAlreadyDeployed: chainId === '1',
+    gasLimit: BigNumber.from('25000000'),
   };
 
-  const RickRoll = await deploy('RickRoll', {
+  const Storage = await deploy('Storage', {
     ...baseDeployArgs,
-    args: [BigNumber.from(arrayBuffer.length), BigNumber.from(rickRoll.length)],
-    gasLimit: BigNumber.from('10000000'),
+    args: [],
   });
 
-  console.log('Deployed at:', RickRoll.address);
-
+  console.log('Deployed at:', Storage.address);
+  /************************************************************************************/
   const contract = new ethers.Contract(
-    RickRoll.address,
-    RickRoll.abi,
+    Storage.address,
+    Storage.abi,
     (await ethers.getSigners())[0],
   );
 
+  const assetCreateTxn: TransactionResponse = await contract.createAsset(
+    BigNumber.from(arrayBuffer.length),
+  );
+  const assetCreateTxnReceipt = await assetCreateTxn.wait();
+  const assetId = assetCreateTxnReceipt?.logs[0].data;
+  console.log(`Created Asset (ID = ${assetId})`);
+
   const chunkSize = 100;
   for (
-    let i = (await contract.bufferLength()).toNumber();
-    i <= arrayBuffer.length;
-    i = (await contract.bufferLength()).toNumber()
+    let i = await contract.progress(assetId);
+    i <= arrayBuffer256.length;
+    i = await contract.progress(assetId)
   ) {
     const from = i;
-    const to = Math.min(i + chunkSize, arrayBuffer.length);
-    const slice = arrayBuffer.slice(from, to);
+    const to = Math.min(i + chunkSize, arrayBuffer256.length);
+    const slice = arrayBuffer256.slice(from, to);
     if (!slice.length) break;
-    const txn = await contract.append(slice, {
+    const txn = await contract.appendAssetBuffer(assetId, slice, {
       gasLimit: BigNumber.from('25000000'),
     });
     console.log(`Transacting ${from} - ${to} (${txn.hash}) ...`);
     await txn.wait();
   }
-
-  console.log('Deployed at:', RickRoll.address);
-
-  console.log('getting rickroll...');
-  const str = await contract.getRickRoll();
-
-  console.log(str);
+  /************************************************************************************/
+  // console.log('getting asset...');
+  // const assetBytes = await contract.getAssetBytes(assetId);
+  // console.log(`\n${assetBytes}\n`);
+  console.log('Storage Done!');
 };
 
 export default func;
