@@ -40,3 +40,4 @@ ignore-space
 
 *.log
 out.base64
+display.html
