@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.6;
+pragma solidity 0.8.12;
 
 import '@0xsequence/sstore2/contracts/SSTORE2Map.sol';
 

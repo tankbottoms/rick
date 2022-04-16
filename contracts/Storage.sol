@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.6;
+pragma solidity 0.8.12;
 import {IStorage} from './interfaces/IStorage.sol';
 import {Base64} from './libraries/Base64.sol';
-
-// MAX number of assets: 65536
-// MAX asset size: 16MB
 
 contract Storage is IStorage {
     modifier onlyOwner() {

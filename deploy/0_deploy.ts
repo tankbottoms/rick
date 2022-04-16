@@ -7,7 +7,7 @@ import uuid4 from 'uuid4';
 import { TransactionRequest, TransactionResponse } from '@ethersproject/abstract-provider';
 
 const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId }) => {
-  const buffer = readFileSync(resolve(__dirname, '../buffer/rick-roll.mp3'));
+  const buffer = readFileSync(resolve(__dirname, '../buffer/rickRoll.mp3'));
   const arrayBuffer = Array.from(buffer);
   const bytes = arrayBuffer.length;
   console.log('Audio Size (KB):', bytes / 1024);
@@ -20,7 +20,9 @@ const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId 
     }
     uint256ArrayBuffer.push(`0x${hex}`);
   }
+  
   /************************************************************************************/
+  
   const chainId = await getChainId();
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
@@ -38,6 +40,7 @@ const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId 
   });
 
   console.log('Deployed at:', SStorage.address);
+  
   /************************************************************************************/
   const contract = new ethers.Contract(
     SStorage.address,
@@ -54,9 +57,9 @@ const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId 
     uint256ArrayBuffer
   );
   
-  console.log(`Created Asset (ID = ${assetId})`);
-
-  console.log('Storage Done!');
+  console.log(`Created Asset (id = ${assetId})`);
+  console.log(`Asset Key: ${assetKey}`);
+  console.log('Set to storage complete!');
 };
 
 export default func;

@@ -5,6 +5,25 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@0xsequence/create3@https://github.com/0xsequence/create3.git":
+  version: 3.0.0
+  resolution: "@0xsequence/create3@https://github.com/0xsequence/create3.git#commit=606096fd114f8996131c0b395a3b42625c3cab47"
+  dependencies:
+    csv-writer: ^1.6.0
+  checksum: 5e4c7d83d28ddaac83bdcac10a726b16f4b068b8d9e63f2158964087798d4e9cd541067aa4256588549e72e4b1ee10ff0fffe859062dd3625518c0b15280fe60
+  languageName: node
+  linkType: hard
+
+"@0xsequence/sstore2@github:0xsequence/sstore2":
+  version: 1.1.0
+  resolution: "@0xsequence/sstore2@https://github.com/0xsequence/sstore2.git#commit=0a28fe61b6e81de9a05b462a24b9f4ba8c70d5b7"
+  dependencies:
+    "@0xsequence/create3": "https://github.com/0xsequence/create3.git"
+    csv-writer: ^1.6.0
+  checksum: b31c16b492da8ee5fddc81529053506b7ad0e43fdc4b8974c1bc9e7c975f462e50c9056bfe2da4f4679e0013e67f7ed703557a5c2a567ae9fcf9336d7a7d0eb1
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:^7.0.0":
   version: 7.16.7
   resolution: "@babel/code-frame@npm:7.16.7"
@@ -747,6 +766,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jbx-protocol/contracts-v2@workspace:."
   dependencies:
+    "@0xsequence/sstore2": "github:0xsequence/sstore2"
     "@chainlink/contracts": ^0.1.6
     "@nomiclabs/hardhat-ethers": ^2.0.2
     "@nomiclabs/hardhat-etherscan": ^2.1.1
@@ -772,6 +792,7 @@ __metadata:
     solhint-plugin-prettier: ^0.0.5
     ts-node: ^10.5.0
     typescript: ^4.5.5
+    uuid4: 2.0.2
   languageName: unknown
   linkType: soft
 
@@ -4047,6 +4068,13 @@ __metadata:
   version: 6.1.0
   resolution: "css-what@npm:6.1.0"
   checksum: b975e547e1e90b79625918f84e67db5d33d896e6de846c9b584094e529f0c63e2ab85ee33b9daffd05bff3a146a1916bec664e18bb76dd5f66cbff9fc13b2bbe
+  languageName: node
+  linkType: hard
+
+"csv-writer@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "csv-writer@npm:1.6.0"
+  checksum: 2e62cb46f00b674f0710eb90586000601f3a467aabe529464dcb402d453a1322a716d7522ef3282dd6551f1059305c7dd3db49def1201caaf340597dcf7b4c7e
   languageName: node
   linkType: hard
 
@@ -12799,6 +12827,13 @@ __metadata:
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: c81095493225ecfc28add49c106ca4f09cdf56bc66731aa8dabc2edbbccb1e1bfe2de6a115e5c6a380d3ea166d1636410b62ef216bb07b3feb1cfde1d95d5080
+  languageName: node
+  linkType: hard
+
+"uuid4@npm:2.0.2":
+  version: 2.0.2
+  resolution: "uuid4@npm:2.0.2"
+  checksum: 6ee2e9d2eb7ea2ac21f2844f14eec38a3bfc9815979a61625c6e059cb2baf9fbc37147de5a54748675997b371d2e116d1fd8d27cb4367be0ae50d5f398ef79cd
   languageName: node
   linkType: hard
 
