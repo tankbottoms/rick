@@ -39,3 +39,4 @@ ignore-space
 
 
 *.log
+out.base64
