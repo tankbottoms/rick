@@ -15,14 +15,14 @@ const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId 
     skipIfAlreadyDeployed: chainId === '1',
     gasLimit: BigNumber.from('25000000'),
   };
-  const Token = await deploy('Token', {
+  const SToken = await deploy('SToken', {
     ...baseDeployArgs,
-    args: [(await hre.deployments.get('Storage')).address],
+    args: [(await hre.deployments.get('SStorage')).address],
   });
 
-  console.log('Deployed at:', Token.address);
+  console.log('Deployed at:', SToken.address);
   /************************************************************************************/
-  const contract = new ethers.Contract(Token.address, Token.abi, (await ethers.getSigners())[0]);
+  const contract = new ethers.Contract(SToken.address, SToken.abi, (await ethers.getSigners())[0]);
 
   /************************************************************************************/
   console.log('getting asset...');
