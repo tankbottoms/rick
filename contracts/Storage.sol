@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.6;
-import {IStorage} from './interfaces/IStorage.sol';
-import {Base64} from './libraries/Base64.sol';
-
-// MAX number of assets: 65536
-// MAX asset size: 16MB
+import { IStorage } from './interfaces/IStorage.sol';
+import { Base64 } from './libraries/Base64.sol';
 
 contract Storage is IStorage {
     modifier onlyOwner() {
@@ -21,6 +18,7 @@ contract Storage is IStorage {
 
     address private _owner;
     uint16 private _assetCount;
+
     mapping(uint16 => uint256[]) private _assets;
     mapping(uint16 => uint24) private _bufferLengthsInBytes;
     mapping(uint16 => uint24) public progress;
@@ -29,7 +27,8 @@ contract Storage is IStorage {
         _owner = msg.sender;
     }
 
-    function createAsset(uint24 _bufferLengthInBytes) public override onlyOwner {
+    function createAsset(uint24 _bufferLengthInBytes) 
+    public override onlyOwner {
         _bufferLengthsInBytes[_assetCount] = _bufferLengthInBytes;
         if (_bufferLengthInBytes % 32 > 0) {
             _assets[_assetCount] = new uint256[]((_bufferLengthInBytes / 32) + 1);
@@ -39,14 +38,16 @@ contract Storage is IStorage {
         emit AssetCreated(_assetCount++);
     }
 
-    function appendAssetBuffer(uint16 _assetId, uint256[] memory _buffer) public override onlyOwner onlyInprogressAsset(_assetId) {
+    function appendAssetBuffer(uint16 _assetId, uint256[] memory _buffer) 
+    public override onlyOwner onlyInprogressAsset(_assetId) {
         for (uint256 i = 0; i < _buffer.length; i++) {
             _assets[_assetId][progress[_assetId] + i] = _buffer[i];
         }
         progress[_assetId] += uint24(_buffer.length);
     }
 
-    function getAssetBytes(uint16 _assetId) public view override returns (bytes memory _bytes) {
+    function getAssetBytes(uint16 _assetId) 
+    public view override returns (bytes memory _bytes) {
         _bytes = new bytes(_bufferLengthsInBytes[_assetId]);
         for (uint256 i = 0; i < progress[_assetId]; i++) {
             uint256 num = _assets[_assetId][i];
