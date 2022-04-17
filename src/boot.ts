@@ -1,11 +1,8 @@
-const { Account, Address, BN } = require('ethereumjs-util');
-const VM = require('@ethereumjs/vm').default;
+import { Account, Address, BN } from 'ethereumjs-util';
+import VM from '@ethereumjs/vm';
 
 async function boot() {
-  const pk = Buffer.from(
-    '1122334455667788112233445566778811223344556677881122334455667788',
-    'hex'
-  );
+  const pk = Buffer.from('1122334455667788112233445566778811223344556677881122334455667788', 'hex');
 
   const accountAddress = Address.fromPrivateKey(pk);
   const account = Account.fromAccountData({
@@ -19,4 +16,4 @@ async function boot() {
   return { vm, pk };
 }
 
-module.exports = boot;
+export default boot;

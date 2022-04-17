@@ -1,11 +1,11 @@
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-const boot = require('./boot');
-const call = require('./call');
-const compile = require('./compile');
-const deploy = require('./deploy');
-const { DOMParser } = require('xmldom');
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import boot from './boot';
+import call from './call';
+import compile from './compile';
+import deploy from './deploy';
+import { DOMParser } from 'xmldom';
 
 const SOURCE = path.join(__dirname, '..', 'contracts', 'Renderer.sol');
 

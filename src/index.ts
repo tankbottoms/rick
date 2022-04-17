@@ -1,10 +1,10 @@
-const fs = require('fs');
-const path = require('path');
-const serve = require('./serve');
-const boot = require('./boot');
-const call = require('./call');
-const compile = require('./compile');
-const deploy = require('./deploy');
+import fs from 'fs';
+import path from 'path';
+import serve from './serve';
+import boot from './boot';
+import call from './call';
+import compile from './compile';
+import deploy from './deploy';
 
 // const StorageSOURCE = path.join(__dirname, '..', 'contracts', 'Storage.sol');
 const SOURCE = path.join(__dirname, '..', 'contracts', 'Token.sol');
@@ -19,7 +19,7 @@ async function main() {
     const address = await deploy(vm, pk, bytecode);
     // const storageResult =
     // await call(vm, storageAddress, storageAbi, 'example');
-    const result = await call(vm, address, abi, 'tokenUri', '0x00');
+    const result = await call(vm, address, abi, 'tokenUri', ['0x00']);
     console.log(result);
     return result;
   }
@@ -31,4 +31,4 @@ async function main() {
   console.log('Serving  http://localhost:9901/');
 }
 
-module.exports = main;
+export default main;

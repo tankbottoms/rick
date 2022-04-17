@@ -1,5 +1,5 @@
-const http = require('http');
-const EventEmitter = require('events');
+import http from 'http';
+import EventEmitter from 'events';
 
 async function serve(handler) {
   const events = new EventEmitter();
@@ -18,7 +18,7 @@ async function serve(handler) {
       res.writeHead(200);
       handler().then(
         (content) => res.end(webpage(content)),
-        (error) => res.end(webpage(`<pre>${error.message}</pre>`))
+        (error) => res.end(webpage(`<pre>${error.message}</pre>`)),
       );
       return;
     }
@@ -27,7 +27,7 @@ async function serve(handler) {
     res.end('Not found: ' + req.url);
   }
   const server = http.createServer(requestListener);
-  await new Promise((resolve) => server.listen(9901, resolve));
+  await new Promise((resolve) => server.listen(9901, () => resolve(true)));
 
   return {
     notify: () => events.emit('change'),
@@ -45,4 +45,4 @@ sse.addEventListener('change', () => window.location.reload());
 </html>
 `;
 
-module.exports = serve;
+export default serve;
