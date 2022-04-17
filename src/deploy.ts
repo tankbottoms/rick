@@ -1,5 +1,5 @@
-const { Address } = require('ethereumjs-util');
-const { Transaction } = require('@ethereumjs/tx');
+import { Address } from 'ethereumjs-util';
+import { Transaction } from '@ethereumjs/tx';
 
 async function deploy(vm, pk, bytecode) {
   const address = Address.fromPrivateKey(pk);
@@ -24,4 +24,4 @@ async function deploy(vm, pk, bytecode) {
   return deploymentResult.createdAddress;
 }
 
-module.exports = deploy;
+export default deploy;

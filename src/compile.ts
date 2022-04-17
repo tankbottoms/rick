@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const solc = require('solc');
+import fs from 'fs';
+import path from 'path';
+import solc from 'solc';
 
 function getSolcInput(source) {
   return {
@@ -40,11 +40,9 @@ function findImports(path) {
 function compile(source) {
   const input = getSolcInput(source);
   process.chdir(path.dirname(source));
-  const output = JSON.parse(
-    solc.compile(JSON.stringify(input), { import: findImports })
-  );
+  const output = JSON.parse(solc.compile(JSON.stringify(input), { import: findImports }));
 
-  let errors = [];
+  let errors: any[] = [];
 
   if (output.errors) {
     for (const error of output.errors) {
@@ -66,4 +64,4 @@ function compile(source) {
   };
 }
 
-module.exports = compile;
+export default compile;

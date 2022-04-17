@@ -1,6 +1,6 @@
-const { defaultAbiCoder, Interface } = require('@ethersproject/abi');
+import { defaultAbiCoder, Interface } from '@ethersproject/abi';
 
-async function call(vm, address, abi, name, args = []) {
+async function call(vm, address, abi, name, args: any[] = []) {
   const iface = new Interface(abi);
   const data = iface.encodeFunctionData(name, args);
 
@@ -16,19 +16,16 @@ async function call(vm, address, abi, name, args = []) {
   }
 
   const logs = renderResult.execResult.logs?.map(([address, topic, data]) =>
-    data.toString().replace(/\x00/g, '')
+    data.toString().replace(/\x00/g, ''),
   );
 
   if (logs?.length) {
     console.log(logs);
   }
 
-  const results = defaultAbiCoder.decode(
-    ['string'],
-    renderResult.execResult.returnValue
-  );
+  const results = defaultAbiCoder.decode(['string'], renderResult.execResult.returnValue);
 
   return results[0];
 }
 
-module.exports = call;
+export default call;
