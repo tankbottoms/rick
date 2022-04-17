@@ -6,6 +6,10 @@ library utils {
     // used to simulate empty strings
     string internal constant NULL = '';
 
+    function random(string memory input) internal pure returns (uint256) {
+        return uint256(keccak256(abi.encodePacked(input)));
+    }
+
     // formats a CSS variable line. includes a semicolon for formatting.
     function setCssVar(string memory _key, string memory _val)
         internal
