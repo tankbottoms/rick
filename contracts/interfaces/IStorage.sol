@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.6;
+pragma solidity ^0.8.13;
 
 interface IStorage {
   function createAsset(uint24 _bufferLengthInBytes) external;

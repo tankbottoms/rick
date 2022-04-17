@@ -26,7 +26,9 @@
   },
   "dependencies": {
     "@chainlink/contracts": "^0.1.6",
-    "@openzeppelin/contracts": "^4.5.0-rc.0",
+    "@ethereumjs/vm": "^5.9.0",
+    "@ethersproject/abi": "^5.6.1",
+    "@openzeppelin/contracts": "^4.5.0",
     "@paulrberg/contracts": "^3.4.0",
     "dotenv": "^10.0.0",
     "esm": "^3.2.25",
@@ -35,8 +37,10 @@
     "prettier": "^2.4.0",
     "prettier-plugin-solidity": "^1.0.0-beta.19",
     "rimraf": "^3.0.2",
+    "solc": "^0.8.13",
     "solhint": "^3.3.6",
-    "solhint-plugin-prettier": "^0.0.5"
+    "solhint-plugin-prettier": "^0.0.5",
+    "xmldom": "^0.6.0"
   },
   "scripts": {
     "chain": "hardhat node",
@@ -53,7 +57,9 @@
     "deploy:mumbai": "hardhat deploy --network mumbai",
     "verify:rinkeby": "hardhat etherscan-verify --network rinkeby",
     "verify:kovan": "hardhat etherscan-verify --network kovan",
-    "verify:mainnet": "hardhat etherscan-verify --network mainnet"
+    "verify:mainnet": "hardhat etherscan-verify --network mainnet",
+    "start": "node src/index.js",
+    "qa": "node src/qa.js"
   },
   "packageManager": "yarn@3.2.0"
 }

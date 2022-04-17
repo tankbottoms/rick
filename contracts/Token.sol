@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.13;
 
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
@@ -77,5 +77,9 @@ contract Token is IToken, ERC721, Ownable {
 
     function getAudioAssetBase64(uint16 _assetId) public view override returns (string memory) {
         return string(abi.encodePacked('data:audio/mp3;base64,', Base64.encode(assets.getAssetBytes(_assetId))));
+    }
+
+    function example() public view override returns (string memory) {
+        return tokenURI(0);
     }
 }

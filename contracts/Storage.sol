@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.6;
+pragma solidity ^0.8.13;
 import { IStorage } from './interfaces/IStorage.sol';
 import { Base64 } from './libraries/Base64.sol';
 

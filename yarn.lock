@@ -241,6 +241,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ethereumjs/common@npm:^2.6.4":
+  version: 2.6.4
+  resolution: "@ethereumjs/common@npm:2.6.4"
+  dependencies:
+    crc-32: ^1.2.0
+    ethereumjs-util: ^7.1.4
+  checksum: 2d3ef9e76c2dfb9fd1fc390834107ffd49e7074b893f3985f3d5996e217064cfe3617b16aff42fb7e8631a21ae32286ddf8ec21251589c4ac43d5b3c03217f9f
+  languageName: node
+  linkType: hard
+
 "@ethereumjs/ethash@npm:^1.1.0":
   version: 1.1.0
   resolution: "@ethereumjs/ethash@npm:1.1.0"
@@ -281,6 +291,26 @@ __metadata:
     merkle-patricia-tree: ^4.2.4
     rustbn.js: ~0.2.0
   checksum: b97ac422ec97400df39cc2c720a0148fa679fd947c5221cbd1c6a2ddc0d04ee56d3033eea69f3c084b659db135a8deaa9a5647a10f8a792eae15708da33975b5
+  languageName: node
+  linkType: hard
+
+"@ethereumjs/vm@npm:^5.9.0":
+  version: 5.9.0
+  resolution: "@ethereumjs/vm@npm:5.9.0"
+  dependencies:
+    "@ethereumjs/block": ^3.6.2
+    "@ethereumjs/blockchain": ^5.5.2
+    "@ethereumjs/common": ^2.6.4
+    "@ethereumjs/tx": ^3.5.1
+    async-eventemitter: ^0.2.4
+    core-js-pure: ^3.0.1
+    debug: ^4.3.3
+    ethereumjs-util: ^7.1.4
+    functional-red-black-tree: ^1.0.1
+    mcl-wasm: ^0.7.1
+    merkle-patricia-tree: ^4.2.4
+    rustbn.js: ~0.2.0
+  checksum: f707a1ca924b31db93cbec06a0782882092cd479ccf7359d9a8c9e9a0a00ef10efde873187ffa8728243122a8ad066c1f6f544b0c6ce10f3055a6ddcf765fc8c
   languageName: node
   linkType: hard
 
@@ -332,6 +362,23 @@ __metadata:
     "@ethersproject/properties": ^5.6.0
     "@ethersproject/strings": ^5.6.0
   checksum: d0cf0450d21ff5beff5593ac4b1749eb64d67fdd7d0e2d489ab1996218ec7242b9dadcd7a9896687e84784c83bf3e39cba6e77b3e813165d6b400e584a96f2fc
+  languageName: node
+  linkType: hard
+
+"@ethersproject/abi@npm:^5.6.1":
+  version: 5.6.1
+  resolution: "@ethersproject/abi@npm:5.6.1"
+  dependencies:
+    "@ethersproject/address": ^5.6.0
+    "@ethersproject/bignumber": ^5.6.0
+    "@ethersproject/bytes": ^5.6.0
+    "@ethersproject/constants": ^5.6.0
+    "@ethersproject/hash": ^5.6.0
+    "@ethersproject/keccak256": ^5.6.0
+    "@ethersproject/logger": ^5.6.0
+    "@ethersproject/properties": ^5.6.0
+    "@ethersproject/strings": ^5.6.0
+  checksum: 0545a874dc5bfe2fec63e472d269f9c6b22b8f9ea77f4c23b93d36a8652152171f1ae2681dc64ec8d46b69506967a5e99c8156dc1f74346eea48cb6b64a1fdc9
   languageName: node
   linkType: hard
 
@@ -748,10 +795,12 @@ __metadata:
   resolution: "@jbx-protocol/contracts-v2@workspace:."
   dependencies:
     "@chainlink/contracts": ^0.1.6
+    "@ethereumjs/vm": ^5.9.0
+    "@ethersproject/abi": ^5.6.1
     "@nomiclabs/hardhat-ethers": ^2.0.2
     "@nomiclabs/hardhat-etherscan": ^2.1.1
     "@nomiclabs/hardhat-waffle": ^2.0.1
-    "@openzeppelin/contracts": ^4.5.0-rc.0
+    "@openzeppelin/contracts": ^4.5.0
     "@openzeppelin/hardhat-upgrades": ^1.8.2
     "@paulrberg/contracts": ^3.4.0
     "@typechain/hardhat": ^2.0.2
@@ -768,10 +817,12 @@ __metadata:
     prettier: ^2.4.0
     prettier-plugin-solidity: ^1.0.0-beta.19
     rimraf: ^3.0.2
+    solc: ^0.8.13
     solhint: ^3.3.6
     solhint-plugin-prettier: ^0.0.5
     ts-node: ^10.5.0
     typescript: ^4.5.5
+    xmldom: ^0.6.0
   languageName: unknown
   linkType: soft
 
@@ -864,7 +915,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openzeppelin/contracts@npm:^4.5.0-rc.0":
+"@openzeppelin/contracts@npm:^4.5.0":
   version: 4.5.0
   resolution: "@openzeppelin/contracts@npm:4.5.0"
   checksum: 1c9c5dff041905771d2a83ac29c64dbf0b48603de43f74a34fb1358813d7c7bf259efe2f64e2112b410c5cca7a0b41aaedd882368be5f01a6d50a3ee0740f962
@@ -3728,6 +3779,13 @@ __metadata:
   version: 3.0.2
   resolution: "commander@npm:3.0.2"
   checksum: 6d14ad030d1904428139487ed31febcb04c1604db2b8d9fae711f60ee6718828dc0e11602249e91c8a97b0e721e9c6d53edbc166bad3cde1596851d59a8f824d
+  languageName: node
+  linkType: hard
+
+"commander@npm:^8.1.0":
+  version: 8.3.0
+  resolution: "commander@npm:8.3.0"
+  checksum: 0f82321821fc27b83bd409510bb9deeebcfa799ff0bf5d102128b500b7af22872c0c92cb6a0ebc5a4cf19c6b550fba9cedfa7329d18c6442a625f851377bacf0
   languageName: node
   linkType: hard
 
@@ -11491,6 +11549,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"solc@npm:^0.8.13":
+  version: 0.8.13
+  resolution: "solc@npm:0.8.13"
+  dependencies:
+    command-exists: ^1.2.8
+    commander: ^8.1.0
+    follow-redirects: ^1.12.1
+    js-sha3: 0.8.0
+    memorystream: ^0.3.1
+    semver: ^5.5.0
+    tmp: 0.0.33
+  bin:
+    solcjs: solc.js
+  checksum: 210a012155a29017f2c6c56a7a0e1e46658b2da75fb99341677a69955b87d90e09810570461012ca89007288a2e9245d033a30d8f5baf599c7b60c0a30b119ba
+  languageName: node
+  linkType: hard
+
 "solhint-plugin-prettier@npm:^0.0.5":
   version: 0.0.5
   resolution: "solhint-plugin-prettier@npm:0.0.5"
@@ -13776,6 +13851,13 @@ __metadata:
     parse-headers: ^2.0.0
     xtend: ^4.0.0
   checksum: a1db277e37737caf3ed363d2a33ce4b4ea5b5fc190b663a6f70bc252799185b840ccaa166eaeeea4841c9c60b87741f0a24e29cbcf6708dd425986d4df186d2f
+  languageName: node
+  linkType: hard
+
+"xmldom@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "xmldom@npm:0.6.0"
+  checksum: 710f64f5b2ba8ac1cbcf62c2e35b095a2f9ccbd596062efe037a5ca85d3ee077b691c4d74952ff476e4bab0dd82727604262899f25dddbb02f89ddeea4cca7f9
   languageName: node
   linkType: hard
 
