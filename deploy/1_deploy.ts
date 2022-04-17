@@ -26,8 +26,13 @@ const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId 
 
   /************************************************************************************/
   console.log('getting asset...');
+
+
+
+
+  
   const base64URI = await contract.tokenUri(0);
-  console.log(base64URI);
+//   console.log(base64URI);
   writeFileSync(resolve(__dirname, '../out.base64'), base64URI);
   console.log('Token Done!');
 };
