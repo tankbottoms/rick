@@ -1,4 +1,4 @@
-# juice-contracts-v2
+# Surprise NFT
 
 ## Modifications
 
