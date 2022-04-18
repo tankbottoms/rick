@@ -121,27 +121,6 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
         }
     }
 
-    function claimForFriend(uint256 numTokens, address walletAddress) public payable virtual override {
-        if (!publicSaleActive) {
-            revert PUBLIC_SALE_NOT_ACTIVE();
-        }
-        if (price * numTokens < msg.value) {
-            revert INSUFFICIENT_FUNDS();
-        }
-        if (_mintedPerAddress[msg.sender] + numTokens > MAX_PER_ADDRESS) {
-            revert EXCEEDS_WALLET_ALLOWANCE();
-        }
-        if (numTokens > MAX_PER_TX) {
-            revert TOKENS_TO_MINT_EXCEEDS_ALLOWANCE();
-        }
-
-        _bulkMint(numTokens, walletAddress, false);
-    }
-
-    function ownerClaim(uint256 numTokens) public override onlyOwner {
-        _bulkMint(numTokens, msg.sender, false);
-    }
-
     /**
      * By default the NFT is a colorful NFT with a Merkaba design pattern.
      * However you can flip the NFT state to reveal a Click Me Button.
@@ -257,7 +236,7 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
         }
 
         string memory clickMeText = '';
-        if (uint8((uint8(hexBytes[18]) + 1) * (tokenId + 1)) > 128) {
+        if (_ricked[tokenId] || uint8((uint8(hexBytes[18]) + 1) * (tokenId + 1)) > 128) {
             clickMeText = '<g style="transform:translate(29px, 244px)"> <rect width="54px" height="17.3333px" rx="8px" ry="8px" fill="rgba(0,0,0,0.6)"></rect><text x="8px" y="11.333px" font-family="\'Courier New\', monospace" font-size="8px" fill="white">Click me</text></g>';
         }
 
