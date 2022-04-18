@@ -17,7 +17,7 @@ const SOURCE = path.join(__dirname, '..', 'contracts', 'Token.sol');
 const NULL_ADDRESS = Address.fromString('0x0000000000000000000000000000000000000000');
 
 async function main() {
-  const { vm, pk } = await boot();
+  const { vm, pk, address: walletAddress } = await boot();
 
   async function handler() {
     const { abi: storageAbi, bytecode: storageBytecode } = compile(StorageSOURCE);
@@ -55,16 +55,20 @@ async function main() {
           .toBuffer()
           .toString('hex');
 
-      const result = await tx(vm, pk, address, abi, 'example');
+      const tokenId = `0x${Math.floor(Math.random() * 100)}`;
+
+      const result = await tx(vm, pk, address, abi, 'tokenUri', tokenId);
       const returnString = result.execResult.returnValue.toString().trim().slice(3);
       const index = returnString.indexOf('data:');
 
       let str = returnString.slice(index).replace('data:application/json;base64,', '');
       const metadata = JSON.parse(Buffer.from(str, 'base64').toString());
       const animation_url = metadata.animation_url;
-      console.log("reloading...");
+      console.log('reloading...');
 
-      return `<iframe src="${animation_url}" width="100%" height="100%" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+      return `<iframe tokenId="${Number(
+        tokenId,
+      )}" address="${walletAddress}" src="${animation_url}" width="100%" height="100%" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
     } catch (error) {
       console.log(error);
     }
