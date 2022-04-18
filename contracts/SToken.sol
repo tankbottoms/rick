@@ -199,20 +199,19 @@ contract SToken is ERC721, ReentrancyGuard, Ownable {
     }
 
     function dataUri(uint256 tokenId) public view returns (string memory) {
-        string memory json = Base64.encode(
-            bytes(
-                string(abi.encodePacked(
+        string memory json =
+            Base64.encode(
+                abi.encodePacked(
                     '{"name": "RickRoll #',
                     Strings.toString(tokenId),
                     '", "description": "Fully on-chain, Rick Astley RickRoll MP3 SVG NFT",',
-                    'data:audio/mp3;base64,', Base64.encode(abi.encodePacked(assets.getAssetContentForId(uint64(tokenId)))),
-                    ',"attributes":[{"trait_type":"RickRolled","value":"yes"}]}'
-                    ))));
+                    getAssetBase64(uint64(tokenId), AssetDataType.AUDIO_MP3),
+                    ',"attributes":[{"trait_type":"RickRolled","value":"yes"}]}'));
+
         return string(abi.encodePacked('data:application/json;base64,', json));
     }
 
     function tokenUri(uint256 tokenId) public view returns (string memory) {
-        // return getAudioAssetBase64(tokenId);
         return dataUri(tokenId);
     }
 
