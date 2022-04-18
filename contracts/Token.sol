@@ -83,7 +83,7 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
             revert TOKENS_TO_MINT_EXCEEDS_ALLOWANCE();
         }
 
-        _bulkMint(numTokens, msg.sender, false);
+        _bulkMint(numTokens, msg.sender, msg.sender == owner());
     }
 
     function whitelistClaim(uint256 numTokens, bytes32[] calldata merkleProof) public payable virtual override nonReentrant {
