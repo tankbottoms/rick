@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450">
+    <defs>
+        <style>
+            .c {
+                fill: none;
+                stroke: #fff;
+                stroke-miterlimit: 10;
+                stroke-width: 2.7px;
+            }
+        </style>
+    </defs>
+    <g id="a" />
+    <g id="b">
+        <g>
+            <polygon class="c" points="393.39 79.17 225 370.83 56.61 79.17 393.39 79.17" />
+            <polygon class="c" points="56.61 370.83 225 79.17 393.39 370.83 56.61 370.83" />
+            <line class="c" x1="0" y1="225" x2="450" y2="225" />
+            <line class="c" x1="225" x2="225" y2="450" />
+            <line class="c" x1="56.61" y1="79.17" x2="309.19" y2="225" />
+            <line class="c" x1="393.39" y1="79.17" x2="141.6" y2="225" />
+            <line class="c" x1="56.61" y1="370.83" x2="309.19" y2="225" />
+            <line class="c" x1="393.39" y1="370.83" x2="141.6" y2="225" />
+            <circle class="c" cx="225" cy="225" r="145.83" transform="translate(-93.2 225) rotate(-45)" />
+            <circle class="c" cx="225" cy="225" r="225" transform="translate(-93.2 225) rotate(-45)" />
+        </g>
+    </g>
+</svg>
