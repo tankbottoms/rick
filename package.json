@@ -40,6 +40,7 @@
     "solc": "^0.8.13",
     "solhint": "^3.3.6",
     "solhint-plugin-prettier": "^0.0.5",
+    "web3": "^1.7.3",
     "xmldom": "^0.6.0"
   },
   "scripts": {
@@ -49,7 +50,7 @@
     "clean": "rimraf ./cache && rimraf ./artifacts",
     "compile": "yarn clean && hardhat compile",
     "pretty": "prettier --write \"./**/*.{js,jsx,json,sol}\"",
-    "dev": "npx hardhat deploy",
+    "dev": "ts-node hot-reload/server.ts",
     "dev-memory": "NODE_OPTIONS=--max_old_space_size=8192",
     "deploy:rinkeby": "hardhat deploy --network rinkeby",
     "deploy:kovan": "hardhat deploy --network kovan",

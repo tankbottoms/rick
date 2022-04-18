@@ -27,7 +27,6 @@ contract Token is IToken, ERC721, Ownable {
         /*
 <svg onclick=\'(()=>{const elms=[this.getElementById("play"),this.getElementById("stop")];if(playing){try{song1.pause()}catch(e){};try{song2.pause()}catch(e){};elms[0].style.opacity=1;elms[1].style.opacity=0;playing = false}else{try{song1.play()}catch(e){};try{song2.play()}catch(e){};elms[0].style.opacity=0;elms[1].style.opacity=1;playing = true}})()\' style="cursor: pointer;position: absolute;top: 260px;left: 360px;z-index: 100;" width="32px" height="32px" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#f0f0f0" /><polygon id="stop" style="opacity:0;" points="10,10 22,10, 22,22 10,22" fill="" /><polygon id="play" points="10,7 10,25 25,15" fill="" /></svg>
 */
-        blockhash(block.number);
 
         string[4] memory filters = [
             '',
@@ -35,14 +34,12 @@ contract Token is IToken, ERC721, Ownable {
             '353%22%20cy%3D%22157%22%20r%3D%22120px%22%20fill%3D%22%23',
             '237%22%20cy%3D%22314%22%20r%3D%22100px%22%20fill%3D%22%23'
         ];
-
-        bytes memory hexBytes = abi.encodePacked(Strings.toHexString(uint256(block.timestamp * uint160(msg.sender))));
+        bytes memory hexBytes = abi.encodePacked(Strings.toHexString(uint256(uint160(msg.sender))));
         for (uint8 i = 0; i < 4; i++) {
             for (uint8 j = 0; j < 3; j++) {
-                filters[i] = string(abi.encodePacked(filters[i], hexBytes[i * 3 + 20 + j], hexBytes[i * 3 + 21 + j]));
+                filters[i] = string(abi.encodePacked(filters[i], hexBytes[i * 3 + (tokenId % 15) + 2 + j], hexBytes[i * 3 + (tokenId % 15) + 3 + j]));
             }
         }
-
         string memory uniswap = string(
             abi.encodePacked(
                 '<svg width="500" height="500" viewBox="0 0 290 290"> <defs> <style> @import url("https://gateway.pinata.cloud/ipfs/QmRodGNTG8Jex8nQQwufuNi4Brb4Cqy16YBJ3CKqBYfQKP/DM_Mono.css"); </style> <filter id="f1"><feImage result="p0" xlink:href="data:image/svg+xml;binary,%3Csvg%20width%3D%22290%22%20height%3D%22290%22%20viewBox%3D%220%200%20290%20290%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%22290px%22%20height%3D%22290px%22%20fill%3D%22%23',
@@ -80,6 +77,6 @@ contract Token is IToken, ERC721, Ownable {
     }
 
     function example() public view override returns (string memory) {
-        return tokenURI(0);
+        return tokenUri(0);
     }
 }

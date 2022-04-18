@@ -37,7 +37,7 @@ function findImports(path) {
   }
 }
 
-function compile(source) {
+function compile(source: string) {
   const input = getSolcInput(source);
   process.chdir(path.dirname(source));
   const output = JSON.parse(solc.compile(JSON.stringify(input), { import: findImports }));
