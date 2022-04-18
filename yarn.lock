@@ -5,6 +5,25 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@0xsequence/create3@https://github.com/0xsequence/create3.git":
+  version: 3.0.0
+  resolution: "@0xsequence/create3@https://github.com/0xsequence/create3.git#commit=606096fd114f8996131c0b395a3b42625c3cab47"
+  dependencies:
+    csv-writer: ^1.6.0
+  checksum: f49e63fb590c18c0023303eb4d3aefb2d238a298a890c4cd9f1bcbd4d15ff20236827678e36c921b1f3c5b3c5fc66786f364c7bfda2efc9029e7e0368f3d896f
+  languageName: node
+  linkType: hard
+
+"@0xsequence/sstore2@github:0xsequence/sstore2":
+  version: 1.1.0
+  resolution: "@0xsequence/sstore2@https://github.com/0xsequence/sstore2.git#commit=0a28fe61b6e81de9a05b462a24b9f4ba8c70d5b7"
+  dependencies:
+    "@0xsequence/create3": "https://github.com/0xsequence/create3.git"
+    csv-writer: ^1.6.0
+  checksum: c89b7dfea2c77fee519159713584047c2fc62fa1de50cf141770b45d10998625f71d1a21858b733de99eed2c1a5477cdc482ed62636872cd605075b7e4cdd788
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:^7.0.0":
   version: 7.16.7
   resolution: "@babel/code-frame@npm:7.16.7"
@@ -794,6 +813,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jbx-protocol/contracts-v2@workspace:."
   dependencies:
+    "@0xsequence/sstore2": "github:0xsequence/sstore2"
     "@chainlink/contracts": ^0.1.6
     "@ethereumjs/vm": ^5.9.0
     "@ethersproject/abi": ^5.6.1
@@ -805,6 +825,7 @@ __metadata:
     "@paulrberg/contracts": ^3.4.0
     "@typechain/hardhat": ^2.0.2
     chai: ^4.3.4
+    colors: ^1.4.0
     dotenv: ^10.0.0
     eslint: ^8.13.0
     esm: ^3.2.25
@@ -822,6 +843,7 @@ __metadata:
     solhint-plugin-prettier: ^0.0.5
     ts-node: ^10.5.0
     typescript: ^4.5.5
+    uuid4: ^2.0.2
     web3: ^1.7.3
     xmldom: ^0.6.0
   languageName: unknown
@@ -3733,7 +3755,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"colors@npm:1.4.0, colors@npm:^1.1.2":
+"colors@npm:1.4.0, colors@npm:^1.1.2, colors@npm:^1.4.0":
   version: 1.4.0
   resolution: "colors@npm:1.4.0"
   checksum: 98aa2c2418ad87dedf25d781be69dc5fc5908e279d9d30c34d8b702e586a0474605b3a189511482b9d5ed0d20c867515d22749537f7bc546256c6014f3ebdcec
@@ -4106,6 +4128,13 @@ __metadata:
   version: 6.1.0
   resolution: "css-what@npm:6.1.0"
   checksum: b975e547e1e90b79625918f84e67db5d33d896e6de846c9b584094e529f0c63e2ab85ee33b9daffd05bff3a146a1916bec664e18bb76dd5f66cbff9fc13b2bbe
+  languageName: node
+  linkType: hard
+
+"csv-writer@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "csv-writer@npm:1.6.0"
+  checksum: 2e62cb46f00b674f0710eb90586000601f3a467aabe529464dcb402d453a1322a716d7522ef3282dd6551f1059305c7dd3db49def1201caaf340597dcf7b4c7e
   languageName: node
   linkType: hard
 
@@ -12875,6 +12904,13 @@ __metadata:
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: c81095493225ecfc28add49c106ca4f09cdf56bc66731aa8dabc2edbbccb1e1bfe2de6a115e5c6a380d3ea166d1636410b62ef216bb07b3feb1cfde1d95d5080
+  languageName: node
+  linkType: hard
+
+"uuid4@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "uuid4@npm:2.0.2"
+  checksum: 6ee2e9d2eb7ea2ac21f2844f14eec38a3bfc9815979a61625c6e059cb2baf9fbc37147de5a54748675997b371d2e116d1fd8d27cb4367be0ae50d5f398ef79cd
   languageName: node
   linkType: hard
 
