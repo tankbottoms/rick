@@ -7,13 +7,15 @@ async function boot() {
   const accountAddress = Address.fromPrivateKey(pk);
   const account = Account.fromAccountData({
     nonce: 0,
-    balance: new BN(10).pow(new BN(18 + 2)), // 100 eth
+    balance: new BN(10).pow(new BN(18 + 5)), // 100000 eth
   });
 
-  const vm = new VM();
+  const vm = new VM({
+    allowUnlimitedContractSize: true,
+  });
   await vm.stateManager.putAccount(accountAddress, account);
 
-  return { vm, pk };
+  return { vm, pk, address: accountAddress };
 }
 
 export default boot;
