@@ -77,12 +77,15 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
         if (!publicSaleActive) {
             revert PUBLIC_SALE_NOT_ACTIVE();
         }
+
         if (price * numTokens < msg.value) {
             revert INCORRECT_TOKEN_AMOUNT();
         }
+
         if (_mintedPerAddress[msg.sender] + numTokens > MAX_PER_ADDRESS) {
             revert EXCEEDS_WALLET_ALLOWANCE();
         }
+
         if (numTokens > MAX_PER_TX) {
             revert TOKENS_TO_MINT_EXCEEDS_ALLOWANCE();
         }
@@ -110,7 +113,7 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
         _bulkMint(numTokens, msg.sender);
     }
 
-    function airdrop(address[] memory to) public override onlyOwner {
+    function airdrop(address[] calldata to) public override onlyOwner {
         if (tokensMinted() + to.length > MAX_SUPPLY) {
             revert EXCEEDS_TOKEN_SUPPLY();
         }
