@@ -12,7 +12,6 @@ import './interfaces/IToken.sol';
 import './interfaces/IStorage.sol';
 import './enums/AssetDataType.sol';
 
-error NOT_IN_FOUNDER_LIST();
 error ALL_TOKENS_MINTED();
 error EXCEEDS_TOKEN_SUPPLY();
 error PUBLIC_SALE_NOT_ACTIVE();
@@ -23,6 +22,7 @@ error INSUFFICIENT_FUNDS();
 error EXCEEDS_WALLET_ALLOWANCE();
 error ADDRESS_NOT_IN_WHITELIST();
 error NOT_READY_TO_ROLL();
+error ALREADY_ROLLED();
 
 contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
     using Counters for Counters.Counter;
@@ -36,30 +36,22 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
     uint256 public constant MAX_PER_TX = 10;
     uint256 public constant MAX_PER_ADDRESS = 15;
     uint256 public constant MAX_PER_ADDRESS_WHITELIST = 25;
-    uint256 public constant MAX_PER_FOUNDER_ADDRESS = 50;
     bool public readyToRoll = false;
     bool public publicSaleActive = false;
     bool public whitelistSaleActive = true;
     bytes32 public whitelistMerkleRoot;
 
-    mapping(address => bool) public founderList;
+    mapping(uint256 => bool) private _ricked;
     mapping(address => uint256) private _mintedPerAddress;
     mapping(address => uint256) private _whitelistMintedPerAddress;
 
     event RicksMinted(address sender, uint256 mintedCount, uint256 lastMintedTokenID);
 
-    modifier isFounder() {
-        if (!founderList[msg.sender]) {
-            revert NOT_IN_FOUNDER_LIST();
-        }
-        _;
-    }
-
     constructor(IStorage _assets) ERC721('Rick', 'RICK') {
         assets = _assets;
     }
 
-    function _bulkMint(uint256 numTokens, address destination) private {
+    function _bulkMint(uint256 numTokens, address destination, bool roll) private {
         if (tokensMinted() + numTokens > MAX_SUPPLY) {
             revert EXCEEDS_TOKEN_SUPPLY();
         }
@@ -67,6 +59,7 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
         for (uint256 i = 0; i < numTokens; i++) {
             uint256 newItemId = _tokenIds.current();
             _safeMint(destination, newItemId);
+            if (roll) { _ricked[newItemId] = true; }
             _tokenIds.increment();
         }
         _mintedPerAddress[destination] += numTokens;
@@ -90,27 +83,30 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
             revert TOKENS_TO_MINT_EXCEEDS_ALLOWANCE();
         }
 
-        _bulkMint(numTokens, msg.sender);
+        _bulkMint(numTokens, msg.sender, false);
     }
 
     function whitelistClaim(uint256 numTokens, bytes32[] calldata merkleProof) public payable virtual override nonReentrant {
         if (!whitelistSaleActive) {
             revert WHITELIST_SALE_NOT_ACTIVE();
         }
+
         if (!MerkleProof.verify(merkleProof, whitelistMerkleRoot, keccak256(abi.encodePacked(msg.sender)))) {
             revert ADDRESS_NOT_IN_WHITELIST();
         }
+
         if (
             _whitelistMintedPerAddress[msg.sender] == MAX_PER_ADDRESS_WHITELIST ||
             _whitelistMintedPerAddress[msg.sender] + numTokens > MAX_PER_ADDRESS_WHITELIST
         ) {
             revert EXCEEDS_WALLET_ALLOWANCE();
         }
+
         if (whitelistPrice * numTokens < msg.value) {
             revert INSUFFICIENT_FUNDS();
         }
 
-        _bulkMint(numTokens, msg.sender);
+        _bulkMint(numTokens, msg.sender, true);
     }
 
     function airdrop(address[] calldata to) public override onlyOwner {
@@ -139,19 +135,11 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
             revert TOKENS_TO_MINT_EXCEEDS_ALLOWANCE();
         }
 
-        _bulkMint(numTokens, walletAddress);
+        _bulkMint(numTokens, walletAddress, false);
     }
 
     function ownerClaim(uint256 numTokens) public override onlyOwner {
-        _bulkMint(numTokens, msg.sender);
-    }
-
-    function founderClaim(uint256 numTokens) public override isFounder {
-        if (_mintedPerAddress[msg.sender] + numTokens > MAX_PER_FOUNDER_ADDRESS) {
-            revert EXCEEDS_WALLET_ALLOWANCE();
-        }
-
-        _bulkMint(numTokens, msg.sender);
+        _bulkMint(numTokens, msg.sender, false);
     }
 
     /**
@@ -162,19 +150,12 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
      * Users must send the setupRick  to the contract to flip the state where the founders can just flip for gas.
      * Remove any links to any files externally from the contract, including the high-resolution Rick.
      **/
-    function flipRickState(bool _flip) public payable override nonReentrant {
-        if (!readyToRoll) {
-            revert NOT_READY_TO_ROLL();
-        }
+    function rollState(uint256 tokenId) public payable override nonReentrant {
+        if (_ricked[tokenId]) { revert ALREADY_ROLLED(); }
 
-        if (founderList[msg.sender]) {
-            readyToRoll = true;
-        } else {
-            if (msg.value != setupRick) {
-                revert INSUFFICIENT_FUNDS();
-            }
-            readyToRoll = true;
-        }
+        if (msg.value != setupRick) { revert INSUFFICIENT_FUNDS(); }
+
+        _ricked[tokenId] = true;
     }
 
     function totalSupply() public view override returns (uint256) {
@@ -225,12 +206,6 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
 
     function setWhitelistSaleActive(bool status) public override onlyOwner {
         whitelistSaleActive = status;
-    }
-
-    function setFounderList(address[] calldata founderAddr) public override onlyOwner {
-        for (uint256 i = 0; i < founderAddr.length; i++) {
-            founderList[founderAddr[i]] = true;
-        }
     }
 
     function dataUri(uint256 tokenId) public view override returns (string memory) {
