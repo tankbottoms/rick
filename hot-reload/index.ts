@@ -45,7 +45,7 @@ async function main() {
         }
         uint256ArrayBuffer.push(`0x${hex}`);
       }
-
+      
       await tx(vm, pk, storageAddress, storageAbi, 'createAsset', '0x1000');
       await tx(vm, pk, storageAddress, storageAbi, 'appendAssetBuffer', '0x00', uint256ArrayBuffer);
 
@@ -71,7 +71,6 @@ async function main() {
   }
 
   const { notify } = await serve(handler);
-
   fs.watch(path.dirname(SOURCE), notify);
   console.log('Watching', path.dirname(SOURCE));
   console.log('Serving  http://localhost:9901/');
