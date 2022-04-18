@@ -14,7 +14,6 @@ error ALL_TOKENS_MINTED();
 error EXCEEDS_TOKEN_SUPPLY();
 error PUBLIC_SALE_NOT_ACTIVE();
 error WHITELIST_SALE_NOT_ACTIVE();
-error TOKENS_TO_CLAIM_MUST_BE_POSITIVE();
 error TOKENS_TO_MINT_EXCEEDS_ALLOWANCE();
 error INCORRECT_TOKEN_AMOUNT();
 error INSUFFICIENT_FUNDS();
@@ -83,9 +82,6 @@ contract SToken is ERC721, ReentrancyGuard, Ownable {
         if(publicSaleActive){
             revert PUBLIC_SALE_NOT_ACTIVE();
         }
-        if(numTokens > 0){
-            revert TOKENS_TO_CLAIM_MUST_BE_POSITIVE();
-        }
         if(price * numTokens <= msg.value){
             revert INCORRECT_TOKEN_AMOUNT();
         }
@@ -106,9 +102,6 @@ contract SToken is ERC721, ReentrancyGuard, Ownable {
     {
         if(whitelistSaleActive){
             revert WHITELIST_SALE_NOT_ACTIVE();
-        }
-        if(numTokens > 0){
-            revert TOKENS_TO_CLAIM_MUST_BE_POSITIVE();
         }
         if(_whitelistMintedPerAddress[msg.sender] <= MAX_PER_ADDRESS_WHITELIST){
             revert EXCEEDS_WALLET_ALLOWANCE();
@@ -158,9 +151,6 @@ contract SToken is ERC721, ReentrancyGuard, Ownable {
     }
 
     function founderClaim(uint256 numTokens) public isFounder {
-        if(numTokens > 0){
-            revert TOKENS_TO_CLAIM_MUST_BE_POSITIVE();
-        }
         if(_mintedPerAddress[msg.sender] + numTokens <=
                 MAX_PER_FOUNDER_ADDRESS){
             revert EXCEEDS_WALLET_ALLOWANCE();
