@@ -40,7 +40,6 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
     bool public readyToRoll = false;
     bool public publicSaleActive = false;
     bool public whitelistSaleActive = true;
-    uint256 public graphicId = 0;
     bytes32 public whitelistMerkleRoot;
 
     mapping(address => bool) public founderList;
@@ -173,10 +172,6 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
             }
             readyToRoll = true;
         }
-    }
-
-    function setMainSVG(uint256 _graphicId) public override {
-        graphicId = _graphicId;
     }
 
     function totalSupply() public view override returns (uint256) {
