@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
-import { IStorage } from './interfaces/IStorage.sol';
-import { Base64 } from './libraries/Base64.sol';
+import {IStorage} from './interfaces/IStorage.sol';
+import {Base64} from './libraries/Base64.sol';
 
 contract Storage is IStorage {
     modifier onlyOwner() {
@@ -27,8 +27,7 @@ contract Storage is IStorage {
         _owner = msg.sender;
     }
 
-    function createAsset(uint24 _bufferLengthInBytes) 
-    public override onlyOwner {
+    function createAsset(uint24 _bufferLengthInBytes) public override onlyOwner {
         _bufferLengthsInBytes[_assetCount] = _bufferLengthInBytes;
         if (_bufferLengthInBytes % 32 > 0) {
             _assets[_assetCount] = new uint256[]((_bufferLengthInBytes / 32) + 1);
@@ -38,16 +37,15 @@ contract Storage is IStorage {
         emit AssetCreated(_assetCount++);
     }
 
-    function appendAssetBuffer(uint16 _assetId, uint256[] memory _buffer) 
-    public override onlyOwner onlyInprogressAsset(_assetId) {
-        for (uint256 i = 0; i < _buffer.length; i++) {
+    function appendAssetBuffer(uint16 _assetId, uint256[] memory _buffer) public override onlyOwner onlyInprogressAsset(_assetId) {
+        uint256 i = 0;
+        for (; (progress[_assetId] + i) < _assets[_assetId].length && i < _buffer.length; i++) {
             _assets[_assetId][progress[_assetId] + i] = _buffer[i];
         }
-        progress[_assetId] += uint24(_buffer.length);
+        progress[_assetId] += uint24(i - 1);
     }
 
-    function getAssetBytes(uint16 _assetId) 
-    public view override returns (bytes memory _bytes) {
+    function getAssetBytes(uint16 _assetId) public view override returns (bytes memory _bytes) {
         _bytes = new bytes(_bufferLengthsInBytes[_assetId]);
         for (uint256 i = 0; i < progress[_assetId]; i++) {
             uint256 num = _assets[_assetId][i];

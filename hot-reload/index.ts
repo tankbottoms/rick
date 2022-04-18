@@ -32,22 +32,56 @@ async function main() {
     try {
       await tx(vm, pk, storageAddress, storageAbi, 'createAsset', '0x1000');
 
-      const buffer = readFileSync(
-        resolve(__dirname, `../buffer/${process.env.FILE_PREPEND || 'dev-'}rickRoll.mp3`),
-      );
-      const arrayBuffer = Array.from(buffer);
-      const uint256ArrayBuffer: string[] = [];
-      for (let i = 0; i < arrayBuffer.length; i += 32) {
-        let hex = '';
-        for (let b = 0; b < 32; b++) {
-          const temp = (arrayBuffer[i + b] || 0).toString(16).padStart(2, '0');
-          hex = temp + hex;
+      const assets = [
+        `${process.env.FILE_PREPEND || 'dev-'}rickRoll.mp3`,
+        'merkaba/1.svg',
+        'merkaba/2.svg',
+        'merkaba/3.svg',
+        'merkaba/4.svg',
+        'merkaba/5.svg',
+        'merkaba/6.svg',
+        'merkaba/7.svg',
+        'merkaba/8.svg',
+      ];
+
+      let assetId = 0;
+      for (const asset of assets) {
+        const buffer = readFileSync(resolve(__dirname, `../buffer/${asset}`));
+        const arrayBuffer = Uint8Array.from(buffer);
+        const uint256ArrayBuffer: string[] = [];
+        for (let i = 0; i < arrayBuffer.length; i += 32) {
+          let hex = '';
+          for (let b = 0; b < 32; b++) {
+            const temp = (arrayBuffer[i + b] || 0).toString(16).padStart(2, '0');
+            hex = temp + hex;
+          }
+          uint256ArrayBuffer.push(`0x${hex}`);
         }
-        uint256ArrayBuffer.push(`0x${hex}`);
+        console.log(`creating asset ./buffer/${asset} (ID = ${assetId})`);
+        await tx(
+          vm,
+          pk,
+          storageAddress,
+          storageAbi,
+          'createAsset',
+          `0x${arrayBuffer.length.toString(16)}`,
+        );
+
+        const chunkSize = 50;
+        for (let i = 0; i < uint256ArrayBuffer.length; i += chunkSize) {
+          console.log(`uploading asset: ${i} - ${i + chunkSize} (out of ${uint256ArrayBuffer.length})`);
+          await tx(
+            vm,
+            pk,
+            storageAddress,
+            storageAbi,
+            'appendAssetBuffer',
+            `0x${assetId.toString(16)}`,
+            uint256ArrayBuffer.slice(i, i + chunkSize),
+          );
+        }
+        assetId++;
       }
-      
-      await tx(vm, pk, storageAddress, storageAbi, 'createAsset', '0x1000');
-      await tx(vm, pk, storageAddress, storageAbi, 'appendAssetBuffer', '0x00', uint256ArrayBuffer);
 
       const address =
         '0x' +
@@ -55,14 +89,14 @@ async function main() {
           .toBuffer()
           .toString('hex');
 
-      const result = await tx(vm, pk, address, abi, 'example');
+      const result = await tx(vm, pk, address, abi, 'tokenUri', '0x0');
       const returnString = result.execResult.returnValue.toString().trim().slice(3);
       const index = returnString.indexOf('data:');
 
       let str = returnString.slice(index).replace('data:application/json;base64,', '');
       const metadata = JSON.parse(Buffer.from(str, 'base64').toString());
       const animation_url = metadata.animation_url;
-      console.log("reloading...");
+      console.log('reloading...');
 
       return `<iframe src="${animation_url}" width="100%" height="100%" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
     } catch (error) {
