@@ -4,6 +4,7 @@ pragma solidity ^0.8.12;
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/utils/Counters.sol';
+import '@openzeppelin/contracts/utils/Strings.sol';
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import { Base64 } from './libraries/Base64.sol';
@@ -53,22 +54,18 @@ contract SToken is ERC721, ReentrancyGuard, Ownable {
     );
 
     modifier isFounder() {
-        if(founderList[msg.sender]) {
-            revert NOT_IN_FOUNDER_LIST();
-        }
+        if (!founderList[msg.sender]) { revert NOT_IN_FOUNDER_LIST(); }
+
         _;
     }
+
     constructor(SStorage _assets) ERC721('Rick', 'RICK') {
         assets = _assets;
     }
 
     function _bulkMint(uint256 numTokens, address destination) private {
-        if(tokensMinted() <= MAX_SUPPLY){
-            revert ALL_TOKENS_MINTED();
-        }
-        if(tokensMinted() + numTokens <= MAX_SUPPLY){
-            revert EXCEEDS_TOKEN_SUPPLY();
-        }
+        if (tokensMinted() + numTokens > MAX_SUPPLY) { revert EXCEEDS_TOKEN_SUPPLY(); }
+
         for (uint256 i = 0; i < numTokens; i++) {
             uint256 newItemId = _tokenIds.current();
             _safeMint(destination, newItemId);
@@ -79,18 +76,11 @@ contract SToken is ERC721, ReentrancyGuard, Ownable {
     }
 
     function claim(uint256 numTokens) public payable virtual nonReentrant {
-        if(publicSaleActive){
-            revert PUBLIC_SALE_NOT_ACTIVE();
-        }
-        if(price * numTokens <= msg.value){
-            revert INCORRECT_TOKEN_AMOUNT();
-        }
-        if(_mintedPerAddress[msg.sender] + numTokens <= MAX_PER_ADDRESS){
-            revert EXCEEDS_WALLET_ALLOWANCE();
-        }
-        if(numTokens <= MAX_PER_TX){
-            revert TOKENS_TO_MINT_EXCEEDS_ALLOWANCE();
-        }
+        if (!publicSaleActive) { revert PUBLIC_SALE_NOT_ACTIVE(); }
+        if (price * numTokens < msg.value) { revert INCORRECT_TOKEN_AMOUNT(); }
+        if (_mintedPerAddress[msg.sender] + numTokens > MAX_PER_ADDRESS) { revert EXCEEDS_WALLET_ALLOWANCE(); }
+        if (numTokens > MAX_PER_TX) { revert TOKENS_TO_MINT_EXCEEDS_ALLOWANCE(); }
+
         _bulkMint(numTokens, msg.sender);
     }
 
@@ -100,25 +90,17 @@ contract SToken is ERC721, ReentrancyGuard, Ownable {
         virtual
         nonReentrant
     {
-        if(whitelistSaleActive){
-            revert WHITELIST_SALE_NOT_ACTIVE();
-        }
-        if(_whitelistMintedPerAddress[msg.sender] <= MAX_PER_ADDRESS_WHITELIST){
-            revert EXCEEDS_WALLET_ALLOWANCE();
-        }
-        if(MerkleProof.verify(merkleProof,whitelistMerkleRoot,keccak256(abi.encodePacked(msg.sender)))){
-            revert ADDRESS_NOT_IN_WHITELIST();
-        }
-        if(whitelistPrice * numTokens <= msg.value){
-            revert INSUFFICIENT_FUNDS();
-        }
+        if (!whitelistSaleActive){ revert WHITELIST_SALE_NOT_ACTIVE(); }
+        if (!MerkleProof.verify(merkleProof, whitelistMerkleRoot, keccak256(abi.encodePacked(msg.sender)))){ revert ADDRESS_NOT_IN_WHITELIST(); }
+        if (_whitelistMintedPerAddress[msg.sender] == MAX_PER_ADDRESS_WHITELIST || _whitelistMintedPerAddress[msg.sender] + numTokens > MAX_PER_ADDRESS_WHITELIST) { revert EXCEEDS_WALLET_ALLOWANCE(); }
+        if (whitelistPrice * numTokens < msg.value) { revert INSUFFICIENT_FUNDS(); }
+
         _bulkMint(numTokens, msg.sender);
     }
 
     function airdrop(address[] memory to) public onlyOwner {
-        if(tokensMinted() + to.length <= MAX_SUPPLY){
-            revert EXCEEDS_TOKEN_SUPPLY();
-        }
+        if (tokensMinted() + to.length > MAX_SUPPLY) { revert EXCEEDS_TOKEN_SUPPLY(); }
+
         for (uint256 i = 0; i < to.length; i++) {
             uint256 newItemId = _tokenIds.current();
             _safeMint(to[i], newItemId);
@@ -131,18 +113,11 @@ contract SToken is ERC721, ReentrancyGuard, Ownable {
         payable
         virtual
     {
-        if(publicSaleActive){
-            revert PUBLIC_SALE_NOT_ACTIVE();
-        }
-        if(price * numTokens <= msg.value){
-            revert INSUFFICIENT_FUNDS();
-        }
-        if(_mintedPerAddress[msg.sender] + numTokens <= MAX_PER_ADDRESS){
-            revert EXCEEDS_WALLET_ALLOWANCE();
-        }
-        if(numTokens <= MAX_PER_TX){
-            revert TOKENS_TO_MINT_EXCEEDS_ALLOWANCE();
-        }
+        if (!publicSaleActive) { revert PUBLIC_SALE_NOT_ACTIVE(); }
+        if (price * numTokens < msg.value) { revert INSUFFICIENT_FUNDS(); }
+        if (_mintedPerAddress[msg.sender] + numTokens > MAX_PER_ADDRESS) { revert EXCEEDS_WALLET_ALLOWANCE(); }
+        if (numTokens > MAX_PER_TX) { revert TOKENS_TO_MINT_EXCEEDS_ALLOWANCE(); }
+
         _bulkMint(numTokens, walletAddress);
     }
 
@@ -151,10 +126,8 @@ contract SToken is ERC721, ReentrancyGuard, Ownable {
     }
 
     function founderClaim(uint256 numTokens) public isFounder {
-        if(_mintedPerAddress[msg.sender] + numTokens <=
-                MAX_PER_FOUNDER_ADDRESS){
-            revert EXCEEDS_WALLET_ALLOWANCE();
-            }
+        if (_mintedPerAddress[msg.sender] + numTokens > MAX_PER_FOUNDER_ADDRESS){ revert EXCEEDS_WALLET_ALLOWANCE(); }
+
         _bulkMint(numTokens, msg.sender);
     }
 
@@ -168,15 +141,12 @@ contract SToken is ERC721, ReentrancyGuard, Ownable {
 
 */
     function flipRickState(bool _flip) public payable nonReentrant {
-        if (!readyToRoll) {
-            revert NOT_READY_TO_ROLL();
-        }
-        if (founderList[msg.sender]){
+        if (!readyToRoll) { revert NOT_READY_TO_ROLL(); }
+
+        if (founderList[msg.sender]) {
             readyToRoll = true;
         } else {
-            if(msg.value != setupRick){
-                revert INSUFFICIENT_FUNDS();
-            }
+            if (msg.value != setupRick) { revert INSUFFICIENT_FUNDS(); }
             readyToRoll = true;
         }
     }
@@ -184,6 +154,7 @@ contract SToken is ERC721, ReentrancyGuard, Ownable {
     function setMainSVG(uint256 _graphicId) public {
         graphicId = _graphicId;
     }
+
     function totalSupply() public view returns (uint256) {
         return _totalSupply;
     }
@@ -248,5 +219,4 @@ contract SToken is ERC721, ReentrancyGuard, Ownable {
             founderList[founderAddr[i]] = true;
         }
     }
-
 }
