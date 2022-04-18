@@ -18,8 +18,7 @@ function chunkArray(arr, size) {
 }
 
 const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId }) => {
-  const buffer = readFileSync(resolve(__dirname, '../buffer/rick-roll.mp3'));
-//   console.log(buffer.toString('hex'))
+  const buffer = readFileSync(resolve(__dirname, '../buffer/rickRoll.mp3'));
   const arrayBuffer = Array.from(buffer);
   const bytes = arrayBuffer.length;
   console.log('Audio Size (KB):', bytes / 1024);
@@ -37,6 +36,7 @@ const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId 
   const slices = chunkArray(uint256ArrayBuffer, 1024 * 24 / 32);
 
   /************************************************************************************/
+  
   const chainId = await getChainId();
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
@@ -54,6 +54,7 @@ const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId 
   });
 
   console.log('Deployed at:', SStorage.address);
+  
   /************************************************************************************/
   const contract = new ethers.Contract(SStorage.address, SStorage.abi, (await ethers.getSigners())[0]);
 

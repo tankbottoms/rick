@@ -25,10 +25,10 @@ const defaultNetwork = 'hardhat';
 
 const VERBOSE = false;
 
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const INFURA_API_KEY = process.env.INFURA_API_KEY;
 const ALCHEMY_MUMBAI_API_KEY = process.env.ALCHEMY_MUMBAI_API_KEY;
 const ALCHEMY_MATIC_API_KEY = process.env.ALCHEMY_MATIC_API_KEY;
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 task('accounts', 'Prints the list of available ETH accounts:', async (args, hre) => {
   const accounts = await hre.ethers.getSigners();
@@ -106,7 +106,7 @@ const hardhatConfig: HardhatUserConfig = {
   solidity: {
     compilers: [
       {
-        version: '0.8.6',
+        version: '0.8.12',
         settings: {
           metadata: {
             /* Not including the metadata hash
@@ -121,6 +121,7 @@ const hardhatConfig: HardhatUserConfig = {
           },
         },
       },
+      { version: '0.8.6' },
       { version: '0.6.0' },
     ],
   },

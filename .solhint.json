@@ -9,8 +9,7 @@
     "func-visibility": ["warn", { "ignoreConstructors": true }],
     "not-rely-on-time": "off",
     "private-vars-leading-underscore": ["warn", { "strict": false }],
-    "const-name-snakecase": "warn",
-    "comprehensive-interface": "error",
+    "const-name-snakecase": "warn",    
     "func-param-name-mixedcase": "error",
     "modifier-name-mixedcase": "error"
   }
