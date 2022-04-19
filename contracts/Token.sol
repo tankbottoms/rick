@@ -51,11 +51,11 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
         assets = _assets;
     }
 
-    function contractURI() public view override returns (string memory) {        
+    function contractURI() public view override returns (string memory) {
         return openseaMetadata;
     }
 
-    function setOpenseaContractUri(string _uri) public override onlyOwner {
+    function setOpenseaContractUri(string calldata _uri) public override onlyOwner {
         require(bytes(_uri).length == 0, 'Token: Opensea contract URI cannot be empty.');
 
         openseaMetadata = _uri;
