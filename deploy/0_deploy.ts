@@ -1,12 +1,13 @@
 import { BigNumber } from 'ethers';
 import { ethers } from 'hardhat';
 import { DeployFunction } from 'hardhat-deploy/types';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { resolve } from 'path';
 import uuid4 from 'uuid4';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import 'colors';
 import { bufferTo32ArrayBuffer, bufferToArrayBuffer } from '../utils/array-buffer';
+import '../scripts/minify-svgs';
 
 const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId }) => {
   const chainId = await getChainId();
@@ -31,14 +32,10 @@ const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId 
 
   const ASSETS = [
     `buffer/${process.env.FILE_PREPEND}rickRoll.mp3`,
-    `buffer/merkaba/1.svg`,
-    `buffer/merkaba/2.svg`,
-    `buffer/merkaba/3.svg`,
-    `buffer/merkaba/4.svg`,
-    `buffer/merkaba/5.svg`,
-    `buffer/merkaba/6.svg`,
-    `buffer/merkaba/7.svg`,
-    `buffer/merkaba/8.svg`,
+    ...readdirSync(resolve(__dirname, '../buffer/minified-svgs'))
+      .filter((filename) => filename.endsWith('.svg'))
+      .sort((a, b) => Number(a.replace('.svg', '')) - Number(b.replace('.svg', '')))
+      .map((filename) => `buffer/minified-svgs/${filename}`),
   ];
 
   let assetId = 0;
