@@ -87,7 +87,7 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
             revert PUBLIC_SALE_NOT_ACTIVE();
         }
 
-        if (price * numTokens < msg.value) {
+        if (price * numTokens > msg.value) {
             revert INCORRECT_TOKEN_AMOUNT();
         }
 
