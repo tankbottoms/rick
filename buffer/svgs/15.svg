@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<style>
-    #svg15 circle,
-    #svg15 polygon,
-    #svg15 line {
-        stroke-miterlimit: 10;
-        stroke: currentColor;
-        stroke-width: 2.59;
-        fill: none;
-    }
-</style>
 <svg id="svg15" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450">
+    <style>
+        #svg15 circle,
+        #svg15 polygon,
+        #svg15 line {
+            stroke-miterlimit: 10;
+            stroke: currentColor;
+            stroke-width: 2.59;
+            fill: none;
+        }
+    </style>
     <g>
         <circle cx="225" cy="225" r="225" />
         <polygon points="30.14 112.5 419.86 112.5 225 450 30.14 112.5" />

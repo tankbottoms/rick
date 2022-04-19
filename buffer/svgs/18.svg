@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<style>
-    #svg18 circle,
-    #svg18 line,
-    #svg18 polygon {
-        fill: none;
-        stroke: currentColor;
-        stroke-miterlimit: 10;
-        stroke-width: 2.74;
-    }
-</style>
 <svg id="svg18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450">
+    <style>
+        #svg18 circle,
+        #svg18 line,
+        #svg18 polygon {
+            fill: none;
+            stroke: currentColor;
+            stroke-miterlimit: 10;
+            stroke-width: 2.74;
+        }
+    </style>
     <circle cx="225" cy="225" r="225" transform="translate(-93.2 225) rotate(-45)" />
     <circle cx="225" cy="225" r="77.73" transform="translate(-22.06 425.53) rotate(-84.06)" />
     <circle cx="224.66" cy="224.97" r="96.42" />

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<style>
-    #svg8 path,
-    #svg8 rect,
-    #svg8 polygon {
-        fill: currentColor;
-    }
-</style>
 <svg id="svg8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450">
+    <style>
+        #svg8 path,
+        #svg8 rect,
+        #svg8 polygon {
+            fill: currentColor;
+        }
+    </style>
     <path d="M230.72,259.78c0,3.23-2.61,5.84-5.84,5.84s-5.84-2.61-5.84-5.84,2.62-5.84,5.84-5.84,5.84,2.61,5.84,5.84Z" />
     <path d="M230.72,119.12c0,3.23-2.61,5.84-5.84,5.84s-5.84-2.61-5.84-5.84,2.62-5.84,5.84-5.84,5.84,2.61,5.84,5.84Z" />
     <path d="M227.93,146.6c0,1.68-1.36,3.05-3.05,3.05s-3.05-1.36-3.05-3.05,1.36-3.05,3.05-3.05,3.05,1.36,3.05,3.05Z" />

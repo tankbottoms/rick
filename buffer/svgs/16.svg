@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<style>
-    #svg16 polygon,
-    #svg16 line,
-    #svg16 circle {
-        fill: none;
-        stroke: currentColor;
-        stroke-miterlimit: 10;
-        stroke-width: 2.64;
-    }
-</style>
 <svg id="svg16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450">
+    <style>
+        #svg16 polygon,
+        #svg16 line,
+        #svg16 circle {
+            fill: none;
+            stroke: currentColor;
+            stroke-miterlimit: 10;
+            stroke-width: 2.64;
+        }
+    </style>
     <g>
         <polygon points="321.96 280.98 128.04 280.98 225 113.04 321.96 280.98" />
         <line x1="225" y1="336.96" x2="225" y2="113.04" />

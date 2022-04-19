@@ -13,6 +13,7 @@
 
 node_modules
 .env
+*.env
 
 # Hardhat files
 cache
@@ -41,4 +42,6 @@ ignore-space
 *.log
 out.base64
 display.html
+
+
 test/*.out

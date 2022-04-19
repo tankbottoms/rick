@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<style>
-    #svg6 path,
-    #svg6 polygon,
-    #svg6 line {
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        stroke-width: 2.61;
-        fill: none;
-        stroke: currentColor;
-    }
-</style>
 <svg id="svg6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450">
+    <style>
+        #svg6 path,
+        #svg6 polygon,
+        #svg6 line {
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 2.61;
+            fill: none;
+            stroke: currentColor;
+        }
+    </style>
     <polygon points="95.49 297.9 225 73.65 354.51 297.9 95.49 297.9" />
     <polygon points="419.92 337.5 225 450 30.08 337.5 30.08 112.5 225 0 419.92 112.5 419.92 337.5" />
     <polygon points="354.51 151.04 225 375.29 95.49 151.04 354.51 151.04" />

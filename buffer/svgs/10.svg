@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<style>
-    #svg10 path,
-    #svg10 rect,
-    #svg10 polygon {
-        fill: currentColor;
-    }
-
-    #svg10 .rects-left rect {
-        x: 26.65;
-        width: 22.44px;
-        height: 1.82px;
-    }
-
-    #svg10 .rects-right rect {
-        x: 400.91;
-        width: 22.44px;
-        height: 1.82px;
-    }
-</style>
 <svg id="svg10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450">
+    <style>
+        #svg10 path,
+        #svg10 rect,
+        #svg10 polygon {
+            fill: currentColor;
+        }
+
+        #svg10 .rects-left rect {
+            x: 26.65;
+            width: 22.44px;
+            height: 1.82px;
+        }
+
+        #svg10 .rects-right rect {
+            x: 400.91;
+            width: 22.44px;
+            height: 1.82px;
+        }
+    </style>
     <g id="g">
         <path
             d="M473.23,253.24c-15.61,0-28.31-12.7-28.31-28.31s12.7-28.31,28.31-28.31,28.31,12.7,28.31,28.31-12.7,28.31-28.31,28.31Zm0-54.45c-14.42,0-26.15,11.73-26.15,26.15s11.73,26.15,26.15,26.15,26.15-11.73,26.15-26.15-11.73-26.15-26.15-26.15Z" />

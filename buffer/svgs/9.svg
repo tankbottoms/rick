@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<style>
-    #svg9 path,
-    #svg9 rect {
-        fill: currentColor;
-    }
-</style>
 <svg id="svg9" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450">
+    <style>
+        #svg9 path,
+        #svg9 rect {
+            fill: currentColor;
+        }
+    </style>
     <path
         d="M323.95,395.89H127.21L28.84,225.5,127.21,55.12h196.74l98.37,170.38-98.37,170.38Zm-193.74-5.19h190.74l95.37-165.19L320.96,60.31H130.21L34.84,225.5l95.37,165.19Z" />
     <path

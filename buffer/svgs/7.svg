@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<style>
-    #svg7 {
-        fill: currentColor;
-    }
-</style>
 <svg id="svg7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450">
+    <style>
+        #svg7 {
+            fill: currentColor;
+        }
+    </style>
     <path d="M101.56,392.37H0V57.63H101.56V392.37Zm-94.18-7.38H94.19V65H7.38V385Z" />
     <path d="M275.78,392.37h-101.56V57.63h101.56V392.37Zm-94.17-7.38h86.8V65h-86.8V385Z" />
     <path d="M450,392.37h-101.56V57.63h101.56V392.37Zm-94.18-7.38h86.8V65h-86.8V385Z" />
