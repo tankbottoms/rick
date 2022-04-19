@@ -98,16 +98,16 @@ contract Storage is IStorage {
         _content = new bytes(_assetList[_assetId]._byteSize);
         uint64 partCount = uint64(_assetList[_assetId]._nodes.length);
 
+        uint64 offset = 0;
         for (uint64 i = 0; i < partCount; i++) {
             bytes32[] memory partContent = getContentForKey(_assetList[_assetId]._nodes[i]);
 
             for (uint16 j = 0; j < partContent.length; j++) {
-                uint64 offset = (i * CHUNK_SIZE) + (j * 32);
                 bytes32 slice = partContent[j];
-
                 for (uint16 k = 0; (offset + k < _assetList[_assetId]._byteSize) && k < 32; k++) {
                     _content[offset + k] = slice[k];
                 }
+                offset += 32;
             }
         }
     }
