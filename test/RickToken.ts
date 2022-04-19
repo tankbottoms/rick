@@ -1,21 +1,12 @@
-import { BigNumber, Contract, ContractFactory } from 'ethers';
-import { ethers } from 'hardhat';
-import { DeployFunction } from 'hardhat-deploy/types';
-import { readFileSync, readdirSync } from 'fs';
-import uuid4 from 'uuid4';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
-import 'colors';
-import { bufferTo32ArrayBuffer, bufferToArrayBuffer } from '../utils/array-buffer';
-import '../scripts/minify-svgs';
-
-
-
 import { expect } from 'chai';
 import fs from 'fs';
 import * as path from 'path';
+import { ethers } from 'hardhat';
+import uuid4 from 'uuid4';
+import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 
 import { chunkAsset } from '../utils/helpers';
-import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 
 async function loadAssets(storage: any, signer: SignerWithAddress, assets: string[]) {
     let assetId = 0;
@@ -38,6 +29,8 @@ async function loadAssets(storage: any, signer: SignerWithAddress, assets: strin
 }
 
 describe("Rick Token tests", function () {
+    this.timeout(30_000);
+
     let storage: any;
     let token: any;
     let alice: any;
@@ -65,20 +58,61 @@ describe("Rick Token tests", function () {
     });
 
     it("Test setSaleActive", async () => {
-        await expect(token.connect(alice).setSaleActive(true)).ok;
-        await expect(token.connect(robert).setSaleActive(false)).revertedWith('Ownable: caller is not the owner')
+        await expect(token.connect(alice).setSaleActive(true)).to.be.ok;
+        await expect(token.connect(robert).setSaleActive(false)).to.be.revertedWith('Ownable: caller is not the owner');
     });
 
-    it("Test claim", async function () {
+    it("Test claim", async () => {
         await expect(token.connect(alice).setSaleActive(false)).ok;
-        await expect(token.connect(robert).claim(1)).reverted;
+        await expect(token.connect(robert).claim(1)).revertedWith('PUBLIC_SALE_NOT_ACTIVE()');
 
         await expect(token.connect(alice).setSaleActive(true)).ok;
-        await expect(token.connect(robert).claim(100)).reverted;
-        await expect(token.connect(candace).claim(1)).ok;
+        await expect(token.connect(robert).claim(100)).to.be.revertedWith('INCORRECT_TOKEN_AMOUNT()');
 
-        const tokensMinted = await token.connect(alice).tokensMinted();
-        expect(tokensMinted.toString()).eq('1');
+        let tokensMinted = await token.connect(alice).tokensMinted();
+        expect(tokensMinted.toString()).eq('0');
+
+        await expect(token.connect(candace).claim(1, { value: ethers.utils.parseEther('0.0005') })).to.be.revertedWith('INCORRECT_TOKEN_AMOUNT');
+        await expect(token.connect(candace).claim(1, { value: ethers.utils.parseEther('0.04') })).ok;
+        await expect(token.connect(candace).claim(1, { value: ethers.utils.parseEther('0.05') })).ok;
+
+        tokensMinted = await token.connect(alice).tokensMinted();
+        expect(tokensMinted.toString()).eq('2');
+    });
+
+    it("Test airdrop", async () => {
+        await expect(token.connect(robert).airdrop([alice.address])).to.be.revertedWith('Ownable: caller is not the owner');
+        await expect(token.connect(alice).airdrop([robert.address])).ok;
+
+        let tokensOwned = await token.connect(alice).balanceOf(alice.address);
+        expect(tokensOwned.toString()).eq('0');
+
+        tokensOwned = await token.connect(alice).balanceOf(robert.address);
+        expect(tokensOwned.toString()).eq('1');
+
+        tokensOwned = await token.connect(candace).balanceOf(candace.address);
+        expect(tokensOwned.toString()).eq('2');
+
+        let tokenOwner = await token.connect(candace).ownerOf(0);
+        expect(tokenOwner.toString()).eq(candace.address);
+
+        tokenOwner = await token.connect(candace).ownerOf(2);
+        expect(tokenOwner.toString()).eq(robert.address);
+    });
+
+    it("Test rollState & dataUri", async () => {
+        await expect(token.connect(candace).rollState(1, { value: ethers.utils.parseEther('0.0005') })).to.be.revertedWith('INSUFFICIENT_FUNDS()');
+        await expect(token.connect(candace).rollState(1, { value: ethers.utils.parseEther('0.005') })).ok;
+        await expect(token.connect(candace).rollState(1, { value: ethers.utils.parseEther('0.005') })).to.be.revertedWith('ALREADY_ROLLED()');
+        await expect(token.connect(candace).rollState(0, { value: ethers.utils.parseEther('0.005') })).to.be.ok;
+    });
+
+    it("Test whitelistClaim", async () => {
+        console.log('whitelistClaim TESTS MISSING')
+    });
+
+    it("Test withdrawAll", async () => {
+        console.log('withdrawAll TESTS MISSING')
     });
 });
 

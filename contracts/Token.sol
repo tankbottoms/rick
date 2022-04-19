@@ -148,7 +148,7 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
             revert ALREADY_ROLLED();
         }
 
-        if (msg.value != RICK_PRICE) {
+        if (msg.value < RICK_PRICE) {
             revert INSUFFICIENT_FUNDS();
         }
 
