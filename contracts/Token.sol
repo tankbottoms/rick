@@ -28,8 +28,10 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     IStorage public assets;
+    
     uint256 private _totalSupply;
-    uint256 public constant MAX_SUPPLY = 1000;
+    string public openseaMetadata;
+    uint256 public constant MAX_SUPPLY = 5000;
     uint256 public constant RICK_PRICE = 0.005 ether;
     uint256 public price = 0.04 ether;
     uint256 public whitelistPrice = 0.01 ether;
@@ -47,6 +49,15 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
 
     constructor(IStorage _assets) ERC721('Rick', 'RICK') {
         assets = _assets;
+    }
+
+    function contractURI() public view override returns (string memory) {        
+        return openseaMetadata;
+    }
+
+    function setOpenseaContractUri(string _uri) public override onlyOwner {
+        require(bytes(_url).length == 0, 'Token: Opensea contract URI cannot be empty.');
+        openseaMetadata = _uri;
     }
 
     function _bulkMint(
