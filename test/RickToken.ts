@@ -34,16 +34,14 @@ async function loadAssets(storage: any, signer: SignerWithAddress, assets: strin
     }
 }
 
-describe("Rick Token tests", function () {
-    this.timeout(1_200_000);
-
+describe("Rick Token tests", () => {
     let storage: any;
     let token: any;
     let alice: any;
     let robert: any;
     let candace: any;
 
-    this.beforeAll(async () => {
+    it("Test contract deployment", async () => {
         [alice, robert, candace] = await ethers.getSigners();
 
         const Storage = await ethers.getContractFactory('Storage');
@@ -61,12 +59,12 @@ describe("Rick Token tests", function () {
             .map((filename) => path.join('buffer', 'minified-svgs', filename));
 
         await loadAssets(storage, alice, [...audio, ...svg]);
-    });
+    }).timeout(1_200_000);
 
     it("Test setSaleActive", async () => {
         await expect(token.connect(alice).setSaleActive(true)).to.be.ok;
         await expect(token.connect(robert).setSaleActive(false)).to.be.revertedWith('Ownable: caller is not the owner');
-    });
+    }).timeout(1_200_000);
 
     it("Test claim", async () => {
         await expect(token.connect(alice).setSaleActive(false)).ok;
@@ -84,7 +82,7 @@ describe("Rick Token tests", function () {
 
         tokensMinted = await token.connect(alice).tokensMinted();
         expect(tokensMinted.toString()).eq('2');
-    });
+    }).timeout(1_200_000);
 
     it("Test airdrop", async () => {
         await expect(token.connect(robert).airdrop([alice.address])).to.be.revertedWith('Ownable: caller is not the owner');
@@ -104,7 +102,7 @@ describe("Rick Token tests", function () {
 
         tokenOwner = await token.connect(candace).ownerOf(2);
         expect(tokenOwner.toString()).eq(robert.address);
-    });
+    }).timeout(1_200_000);
 
     it("Test getAssetBase64", async () => {
         const imageData = await token.connect(candace).getAssetBase64(1, AssetDataType.IMAGE_SVG);
@@ -112,7 +110,7 @@ describe("Rick Token tests", function () {
 
         const audioData = await token.connect(candace).getAssetBase64(0, AssetDataType.AUDIO_MP3);
         fs.writeFileSync(path.resolve(__dirname, 'audioData.out'), audioData);
-    });
+    }).timeout(1_200_000);
 
     it("Test rollState & dataUri", async () => {
         await expect(token.connect(candace).rollState(1, { value: ethers.utils.parseEther('0.0005') })).to.be.revertedWith('INSUFFICIENT_FUNDS()');
@@ -125,15 +123,15 @@ describe("Rick Token tests", function () {
 
         const token2Data = await token.connect(candace).dataUri(2);
         fs.writeFileSync(path.resolve(__dirname, 'token2Data.out'), token2Data);
-    });
+    }).timeout(1_200_000);
 
     it("Test whitelistClaim", async () => {
         console.log('whitelistClaim TESTS MISSING');
-    });
+    }).timeout(1_200_000);
 
     it("Test withdrawAll", async () => {
         console.log('withdrawAll TESTS MISSING');
-    });
+    }).timeout(1_200_000);
 });
 
 // let tx: TransactionResponse = await token.connect(candace).claim(1);
