@@ -37,14 +37,12 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
     uint256 public constant MAX_PER_ADDRESS = 15;
     uint256 public constant MAX_PER_ADDRESS_WHITELIST = 25;
     uint256 public constant MAX_PER_FOUNDER_ADDRESS = 50;
-    bool public readyToRoll = false;
     bool public publicSaleActive = false;
     bool public whitelistSaleActive = true;
     bytes32 public whitelistMerkleRoot;
 
     mapping(address => bool) public founderList;
     mapping(address => uint256) private _mintedPerAddress;
-    mapping(address => uint256) private _whitelistMintedPerAddress;
 
     event RicksMinted(address sender, uint256 mintedCount, uint256 lastMintedTokenID);
 
@@ -101,8 +99,8 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
             revert ADDRESS_NOT_IN_WHITELIST();
         }
         if (
-            _whitelistMintedPerAddress[msg.sender] == MAX_PER_ADDRESS_WHITELIST ||
-            _whitelistMintedPerAddress[msg.sender] + numTokens > MAX_PER_ADDRESS_WHITELIST
+            _mintedPerAddress[msg.sender] == MAX_PER_ADDRESS_WHITELIST ||
+            _mintedPerAddress[msg.sender] + numTokens > MAX_PER_ADDRESS_WHITELIST
         ) {
             revert EXCEEDS_WALLET_ALLOWANCE();
         }
