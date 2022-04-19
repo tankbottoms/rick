@@ -5,7 +5,7 @@ import '@nomiclabs/hardhat-waffle';
 import '@nomiclabs/hardhat-ethers';
 import 'hardhat-gas-reporter';
 import 'hardhat-deploy';
-import { utils } from 'ethers';
+import { utils, Wallet } from 'ethers';
 
 dotenv.config();
 
@@ -28,7 +28,11 @@ const VERBOSE = false;
 const INFURA_API_KEY = process.env.INFURA_API_KEY;
 const ALCHEMY_MUMBAI_API_KEY = process.env.ALCHEMY_MUMBAI_API_KEY;
 const ALCHEMY_MATIC_API_KEY = process.env.ALCHEMY_MATIC_API_KEY;
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const PRIVATE_KEY = Wallet.createRandom().privateKey;
+const PRIVATE_KEY_2 = Wallet.createRandom().privateKey;
+const PRIVATE_KEY_3 = Wallet.createRandom().privateKey;
+const PRIVATE_KEY_4 = Wallet.createRandom().privateKey;
+const PRIVATE_KEY_5 = Wallet.createRandom().privateKey;
 
 task('accounts', 'Prints the list of available ETH accounts:', async (args, hre) => {
   const accounts = await hre.ethers.getSigners();
@@ -62,11 +66,28 @@ const hardhatConfig: HardhatUserConfig = {
       allowUnlimitedContractSize: true,
       chainId: 31337,
       blockGasLimit: 30_000_000,
-      accounts: {
-        mnemonic: 'aunt rule simple minor aware math lecture moon vintage clap earth machine crack mirror upgrade',
-        count: 5,
-        accountsBalance: utils.parseEther('100000').toString()
-      }
+      accounts: [
+        {
+          privateKey: PRIVATE_KEY || '',
+          balance: utils.parseEther('100000').toString(),
+        },
+        {
+          privateKey: PRIVATE_KEY_2 || '',
+          balance: utils.parseEther('100000').toString(),
+        },
+        {
+          privateKey: PRIVATE_KEY_3 || '',
+          balance: utils.parseEther('100000').toString(),
+        },
+        {
+          privateKey: PRIVATE_KEY_4 || '',
+          balance: utils.parseEther('100000').toString(),
+        },
+        {
+          privateKey: PRIVATE_KEY_5 || '',
+          balance: utils.parseEther('100000').toString(),
+        },
+      ]
     },
     rinkeby: {
       url: 'https://rinkeby.infura.io/v3/' + INFURA_API_KEY,
