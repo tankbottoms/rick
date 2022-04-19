@@ -4,6 +4,10 @@ pragma solidity ^0.8.13;
 import '../enums/AssetDataType.sol';
 
 interface IToken {
+    function contractURI() public view returns (string memory);
+    
+    function setOpenseaContractUri(string _uri) public;
+
     function claim(uint256 numTokens) external payable;
 
     function whitelistClaim(uint256 numTokens, bytes32[] calldata merkleProof) external payable;
