@@ -229,7 +229,7 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
         bytes memory hexBytes = abi.encodePacked(Strings.toHexString(uint256(uint160(msg.sender))));
 
         uint8[3] memory ints;
-        ints[0] = 19;
+        ints[0] = 18;
         ints[1] = uint8((uint8(hexBytes[10]) + 1) * (tokenId + 1));
         ints[2] = ints[1] % ints[0];
 
