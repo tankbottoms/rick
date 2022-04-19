@@ -18,8 +18,6 @@ interface IToken {
 
     function flipRickState(bool _flip) external payable;
 
-    function setMainSVG(uint256 _graphicId) external;
-
     function totalSupply() external view returns (uint256);
 
     function dataUri(uint256 tokenId) external view returns (string memory);
