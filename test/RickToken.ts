@@ -20,6 +20,8 @@ async function loadAssets(storage: any, signer: SignerWithAddress, assets: strin
     for (const assetPath of assets) {
         const assetParts = chunkAsset(assetPath);
 
+        
+
         let sliceKey = '0x' + Buffer.from(uuid4(), 'utf-8').toString('hex').slice(-64);
         let tx: TransactionResponse = await storage.connect(signer).createAsset(assetId, sliceKey, assetParts.parts[0], assetParts.length, { gasLimit: 5_000_000 });
         await tx.wait();
@@ -29,9 +31,25 @@ async function loadAssets(storage: any, signer: SignerWithAddress, assets: strin
             tx = await storage.connect(signer).appendAssetContent(assetId, sliceKey, assetParts.parts[i], { gasLimit: 5_000_000 });
             await tx.wait();
         }
+        
+        if(assetPath.endsWith('/0.svg')) {
+            const imageData: string = await storage.connect(signer).getAssetContentForId(assetId);
+            const arrayBuffer: number[] = [];
+            for(let i = 2; i <imageData.length ; i+=2){
+                arrayBuffer.push(Number(`0x${imageData.slice(i, i+2)}`));
+            }
+            const buffer = Buffer.from(arrayBuffer);
+            fs.writeFileSync(require('path').resolve(__dirname, './0.svg'), buffer);
+            return;
+        }
 
         assetId++;
     }
+}
+
+async function downloadAsset(storage: any, signer: SignerWithAddress, assetsIds: number[]) {
+    // const imageData = await storage.connect(signer).getAssetContentForId(1);
+    // console.log(imageData);
 }
 
 describe("Rick Token tests", () => {
@@ -59,6 +77,7 @@ describe("Rick Token tests", () => {
             .map((filename) => path.join('buffer', 'minified-svgs', filename));
 
         await loadAssets(storage, alice, [...audio, ...svg]);
+        await downloadAsset(storage, alice, [1]);
     }).timeout(1_200_000);
 
     it("Test setSaleActive", async () => {
