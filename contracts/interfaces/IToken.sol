@@ -10,16 +10,6 @@ interface IToken {
 
     function airdrop(address[] memory to) external;
 
-    function claimForFriend(uint256 numTokens, address walletAddress) external payable;
-
-    function ownerClaim(uint256 numTokens) external;
-
-    function founderClaim(uint256 numTokens) external;
-
-    function flipRickState(bool _flip) external payable;
-
-    function setMainSVG(uint256 _graphicId) external;
-
     function totalSupply() external view returns (uint256);
 
     function dataUri(uint256 tokenId) external view returns (string memory);
@@ -42,15 +32,5 @@ interface IToken {
 
     function setWhitelistSaleActive(bool status) external;
 
-    function setFounderList(address[] calldata founderAddr) external;
-
-    /*
-    function totalSupply() external view returns (uint256);
-
-    function tokenUri(uint256 tokenId) external view returns (string memory);
-
-    function getAudioAssetBase64(uint16 _assetId) external view returns (string memory);
-
-    function example() external view returns (string memory);
-    */
+    function rollState(uint256 tokenId) external payable;
 }
