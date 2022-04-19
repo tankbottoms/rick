@@ -9,6 +9,8 @@ error ERR_ASSET_EXISTS();
 error ERR_ASSET_MISSING();
 
 contract Storage is IStorage {
+    uint32 private constant CHUNK_SIZE = 24 * 1024;
+
     modifier onlyOwner() {
         require(_owner == msg.sender, 'msg.sender!=_owner');
         _;
@@ -46,7 +48,7 @@ contract Storage is IStorage {
         bytes32[] memory _content,
         uint64 fileSizeInBytes
     ) public override onlyOwner {
-        if (_content.length > (24 * 1024) / 32) {
+        if (_content.length > CHUNK_SIZE / 32) {
             revert ERR_CHUNK_SIZE_LIMIT();
         }
         if (_assetList[_assetId]._assetId != 0) {
@@ -68,7 +70,7 @@ contract Storage is IStorage {
         bytes32 _assetKey,
         bytes32[] calldata _content
     ) public override onlyOwner {
-        if (_content.length > (24 * 1024) / 32) {
+        if (_content.length > CHUNK_SIZE / 32) {
             revert ERR_CHUNK_SIZE_LIMIT();
         }
         if (_assetList[_assetId]._assetId == 0 && _assetList[_assetId]._byteSize == 0) {
@@ -100,7 +102,7 @@ contract Storage is IStorage {
             bytes32[] memory partContent = getContentForKey(_assetList[_assetId]._nodes[i]);
 
             for (uint16 j = 0; j < partContent.length; j++) {
-                uint64 offset = (i * 1024 * 24) + (j * 32);
+                uint64 offset = (i * CHUNK_SIZE) + (j * 32);
                 bytes32 slice = partContent[j];
 
                 for (uint16 k = 0; (offset + k < _assetList[_assetId]._byteSize) && k < 32; k++) {
