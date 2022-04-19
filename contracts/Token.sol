@@ -30,7 +30,7 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
     IStorage public assets;
     uint256 private _totalSupply;
     uint256 public constant MAX_SUPPLY = 1000;
-    uint256 public constant setupRick = 0.005 ether;
+    uint256 public constant RICK_PRICE = 0.005 ether;
     uint256 public price = 0.04 ether;
     uint256 public whitelistPrice = 0.01 ether;
     uint256 public constant MAX_PER_TX = 10;
@@ -124,20 +124,16 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
 
     /**
      * By default the NFT is a colorful NFT with a Merkaba design pattern.
-     * However you can flip the NFT state to reveal a Click Me Button.
+     * However you can "roll" the NFT state to reveal a Click Me Button.
      * When the button is pressed, then the Rick SVG is revealed and music plays in a loop.
-     * The Rick mode stays for 72 hours for normal users and 1 week for founders, afterwhich the state is flipped back.
-     * Users must send the setupRick  to the contract to flip the state where the founders can just flip for gas.
-     * Remove any links to any files externally from the contract, including the high-resolution Rick.
+     * If the user pays into rollState for a particular token, it will permanently switch to the "ricked" state where the click-me button will appear all the time. Separately, tokens that haven't been "ricked" will pseudo-randomly show the click-me button as well based on entropy from user address, and blockchain state.
      **/
     function rollState(uint256 tokenId) public payable override nonReentrant {
         if (_ricked[tokenId]) {
             revert ALREADY_ROLLED();
         }
 
-        if (msg.value != setupRick) {
-            revert INSUFFICIENT_FUNDS();
-        }
+        if (msg.value != RICK_PRICE) { revert INSUFFICIENT_FUNDS(); }
 
         _ricked[tokenId] = true;
     }
