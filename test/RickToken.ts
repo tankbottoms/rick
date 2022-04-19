@@ -8,6 +8,12 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 
 import { chunkAsset } from '../utils/helpers';
 
+enum AssetDataType {
+    AUDIO_MP3,
+    IMAGE_SVG,
+    IMAGE_PNG
+}
+
 async function loadAssets(storage: any, signer: SignerWithAddress, assets: string[]) {
     let assetId = 0;
 
@@ -29,7 +35,7 @@ async function loadAssets(storage: any, signer: SignerWithAddress, assets: strin
 }
 
 describe("Rick Token tests", function () {
-    this.timeout(30_000);
+    this.timeout(1_200_000);
 
     let storage: any;
     let token: any;
@@ -100,19 +106,33 @@ describe("Rick Token tests", function () {
         expect(tokenOwner.toString()).eq(robert.address);
     });
 
+    it("Test getAssetBase64", async () => {
+        const imageData = await token.connect(candace).getAssetBase64(1, AssetDataType.IMAGE_SVG);
+        fs.writeFileSync(path.resolve(__dirname, 'imageData.out'), imageData);
+
+        const audioData = await token.connect(candace).getAssetBase64(0, AssetDataType.AUDIO_MP3);
+        fs.writeFileSync(path.resolve(__dirname, 'audioData.out'), audioData);
+    });
+
     it("Test rollState & dataUri", async () => {
         await expect(token.connect(candace).rollState(1, { value: ethers.utils.parseEther('0.0005') })).to.be.revertedWith('INSUFFICIENT_FUNDS()');
         await expect(token.connect(candace).rollState(1, { value: ethers.utils.parseEther('0.005') })).ok;
         await expect(token.connect(candace).rollState(1, { value: ethers.utils.parseEther('0.005') })).to.be.revertedWith('ALREADY_ROLLED()');
         await expect(token.connect(candace).rollState(0, { value: ethers.utils.parseEther('0.005') })).to.be.ok;
+
+        const token0Data = await token.connect(candace).dataUri(0);
+        fs.writeFileSync(path.resolve(__dirname, 'token0Data.out'), token0Data);
+
+        const token2Data = await token.connect(candace).dataUri(2);
+        fs.writeFileSync(path.resolve(__dirname, 'token2Data.out'), token2Data);
     });
 
     it("Test whitelistClaim", async () => {
-        console.log('whitelistClaim TESTS MISSING')
+        console.log('whitelistClaim TESTS MISSING');
     });
 
     it("Test withdrawAll", async () => {
-        console.log('withdrawAll TESTS MISSING')
+        console.log('withdrawAll TESTS MISSING');
     });
 });
 
