@@ -214,13 +214,15 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
 
     function _getHTMLBase64(uint256 tokenId) internal view returns (string memory) {
         string[18] memory merkaba;
+        bool spin = ;
+        uint8 skip
 
         for (uint8 i = 0; i < 18; i++) {
             merkaba[i] = string(assets.getAssetContentForId(i + 1));
         }
 
         string
-            memory html = unicode'<style type="text/css" media="screen">html,body{padding: 0;margin: 0;	font-size: 1em;	line-height: 1.2;font-family: "Simple Console", monospace;}pre {position: absolute;	margin:0;padding:0;	left:0;	top:0;width:1000px;height:2000px;color: white;opacity: 0.5;font-family: inherit;transform: scale(0.7);transform-origin:10px 10px;}</style><audio src="" id="song1" volume="0.1" style="display: none;" loop="true"></audio><audio src="" id="song2" volume="0.1" style="display: none;" loop="true"></audio><script>const songs = [song1, song2];const tracks = location.hash.slice(1).split("#");const betterQuality = ["", ""];for(let i =0;i<songs.length;i++) songs[i].src = (navigator.onLine && betterQuality[i]) || tracks[i];</script>';
+            memory html = unicode'<audio src="" id="song1" volume="0.1" style="display: none;" loop="true"></audio><audio src="" id="song2" volume="0.1" style="display: none;" loop="true"></audio><script>const songs = [song1, song2];const tracks = location.hash.slice(1).split("#");const betterQuality = ["", ""];for(let i =0;i<songs.length;i++) songs[i].src = (navigator.onLine && betterQuality[i]) || tracks[i];</script>';
 
         string[4] memory filters = [
             '',

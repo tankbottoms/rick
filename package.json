@@ -36,6 +36,7 @@
     "@openzeppelin/contracts": "^4.5.0",
     "@paulrberg/contracts": "^3.4.0",
     "colors": "^1.4.0",
+    "commander": "^9.2.0",
     "dotenv": "^10.0.0",
     "esm": "^3.2.25",
     "glob": "^7.2.0",
