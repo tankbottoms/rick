@@ -210,8 +210,6 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
 
     function _getHTMLBase64(uint256 tokenId) internal view returns (string memory) {
         string[18] memory merkaba;
-        bool spin = ;
-        uint8 skip
 
         for (uint8 i = 0; i < 18; i++) {
             merkaba[i] = string(assets.getAssetContentForId(i + 1));
