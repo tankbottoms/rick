@@ -63,7 +63,7 @@ const hardhatConfig: HardhatUserConfig = {
       chainId: 31337,
       blockGasLimit: 30_000_000,
       accounts: {
-        mnemonic: 'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon',
+        mnemonic: 'aunt rule simple minor aware math lecture moon vintage clap earth machine crack mirror upgrade',
         count: 5,
         accountsBalance: utils.parseEther('100000').toString()
       }
