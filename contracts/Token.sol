@@ -161,7 +161,7 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
     }
 
     function withdrawAll() public payable override onlyOwner {
-        require(payable(msg.sender).send(address(this).balance), 'transfer failed');
+        require(payable(msg.sender).send(address(this).balance), 'Token: Withdraw all failed.');
     }
 
     function tokensMinted() public view override returns (uint256) {
@@ -191,7 +191,7 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
     function dataUri(uint256 tokenId) public view override returns (string memory) {
         string memory json = Base64.encode(
             abi.encodePacked(
-                '{"name": "RickRoll #',
+                '{"name": "RickRoll No.',
                 Strings.toString(tokenId),
                 '", "description": "Fully on-chain, Rick Astley RickRoll MP3 SVG NFT", "audio": "',
                 getAssetBase64(uint64(0), AssetDataType.AUDIO_MP3),
