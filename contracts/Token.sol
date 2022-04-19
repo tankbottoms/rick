@@ -179,9 +179,7 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
     }
 
     function tokensMinted() public view override returns (uint256) {
-        if (_tokenIds.current() == 0) { return 0; }
-
-        return _tokenIds.current() - 1;
+        return _tokenIds.current();
     }
 
     function isSaleActive() public view override returns (bool) {
