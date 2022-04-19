@@ -3,16 +3,16 @@ import path from 'path';
 import serve from './serve';
 import boot from './boot';
 import tx from './tx';
-import call from './call';
 import compile from './compile';
 import deploy from './deploy';
 import { Address } from 'ethereumjs-util';
 import { BigNumber } from 'ethers';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { resolve } from 'path';
 import { bufferTo32ArrayBuffer, bufferToArrayBuffer } from '../utils/array-buffer';
 import uuid4 from 'uuid4';
 import 'colors';
+import '../scripts/minify-svgs';
 
 const StorageSOURCE = path.join(__dirname, '..', 'contracts', 'Storage.sol');
 const SOURCE = path.join(__dirname, '..', 'contracts', 'Token.sol');
@@ -31,14 +31,10 @@ async function main() {
     try {
       const ASSETS = [
         `buffer/dev-rickRoll.mp3`,
-        `buffer/merkaba/1.svg`,
-        `buffer/merkaba/2.svg`,
-        `buffer/merkaba/3.svg`,
-        `buffer/merkaba/4.svg`,
-        `buffer/merkaba/5.svg`,
-        `buffer/merkaba/6.svg`,
-        `buffer/merkaba/7.svg`,
-        `buffer/merkaba/8.svg`,
+        ...readdirSync(resolve(__dirname, '../buffer/minified-svgs'))
+          .filter((filename) => filename.endsWith('.svg'))
+          .sort((a, b) => Number(a.replace('.svg', '')) - Number(b.replace('.svg', '')))
+          .map((filename) => `buffer/minified-svgs/${filename}`),
       ];
 
       let assetId = 0;
@@ -91,7 +87,7 @@ async function main() {
       const index = returnString.indexOf('data:');
 
       let str = returnString.slice(index).replace('data:application/json;base64,', '');
-      
+
       const metadata = JSON.parse(Buffer.from(str, 'base64').toString());
       const animation_url = metadata.animation_url;
       console.log('reloading...');

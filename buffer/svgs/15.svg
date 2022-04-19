@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<style>
+    #svg15 circle,
+    #svg15 polygon,
+    #svg15 line {
+        stroke-miterlimit: 10;
+        stroke: currentColor;
+        stroke-width: 2.59;
+        fill: none;
+    }
+</style>
+<svg id="svg15" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450">
+    <g>
+        <circle cx="225" cy="225" r="225" />
+        <polygon points="30.14 112.5 419.86 112.5 225 450 30.14 112.5" />
+        <line x1="225" y1="0" x2="225" y2="450" />
+        <line x1="30.14" y1="337.5" x2="419.86" y2="112.5" />
+        <line x1="30.14" y1="112.5" x2="419.86" y2="337.5" />
+        <polygon points="225 337.01 322.43 281.25 322.43 169 225 112.99 127.99 168.99 127.99 280.98 225 337.01" />
+    </g>
+    <circle cx="225.21" cy="225.12" r="112.62" />
+</svg>
