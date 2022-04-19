@@ -61,13 +61,12 @@ const hardhatConfig: HardhatUserConfig = {
     hardhat: {
       allowUnlimitedContractSize: true,
       chainId: 31337,
-      blockGasLimit: 0x1fffffffffffff,
-      accounts: [
-        {
-          privateKey: PRIVATE_KEY || '',
-          balance: utils.parseEther('100000').toString(),
-        },
-      ],
+      blockGasLimit: 30_000_000,
+      accounts: {
+        mnemonic: 'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon',
+        count: 5,
+        accountsBalance: utils.parseEther('100000').toString()
+      }
     },
     rinkeby: {
       url: 'https://rinkeby.infura.io/v3/' + INFURA_API_KEY,
