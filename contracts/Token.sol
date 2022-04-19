@@ -138,7 +138,10 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
      * By default the NFT is a colorful NFT with a Merkaba design pattern.
      * However you can "roll" the NFT state to reveal a Click Me Button.
      * When the button is pressed, then the Rick SVG is revealed and music plays in a loop.
-     * If the user pays into rollState for a particular token, it will permanently switch to the "ricked" state where the click-me button will appear all the time. Separately, tokens that haven't been "ricked" will pseudo-randomly show the click-me button as well based on entropy from user address, and blockchain state.
+     * If the user pays into rollState for a particular token, it will permanently switch 
+     to the "ricked" state where the click-me button will appear all the time. 
+     Separately, tokens that haven't been "ricked" will pseudo-randomly show the click-me button as 
+     well based on entropy from user address, and blockchain state.
      **/
     function rollState(uint256 tokenId) public payable override nonReentrant {
         if (_ricked[tokenId]) {
