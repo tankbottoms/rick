@@ -16,13 +16,14 @@ error ALL_TOKENS_MINTED();
 error EXCEEDS_TOKEN_SUPPLY();
 error PUBLIC_SALE_NOT_ACTIVE();
 error WHITELIST_SALE_NOT_ACTIVE();
-error TOKENS_TO_MINT_EXCEEDS_ALLOWANCE();
 error INCORRECT_TOKEN_AMOUNT();
 error INSUFFICIENT_FUNDS();
 error EXCEEDS_WALLET_ALLOWANCE();
+error TOKENS_TO_MINT_EXCEEDS_ALLOWANCE();
 error INCORRECT_WHITELIST_CLAIM();
 error NOT_READY_TO_ROLL();
 error ALREADY_ROLLED();
+error ARGUMENT_EMPTY();
 
 contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
     using Counters for Counters.Counter;
@@ -56,7 +57,9 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
     }
 
     function setOpenseaContractUri(string calldata _uri) public override onlyOwner {
-        require(bytes(_uri).length == 0, 'Token: Opensea contract URI cannot be empty.');
+        if (bytes(_uri).length == 0){
+            revert ARGUMENT_EMPTY();
+        }
 
         openseaMetadata = _uri;
     }
@@ -82,7 +85,8 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
         emit RicksMinted(destination, numTokens, _tokenIds.current() - 1);
     }
 
-    function claim(uint256 numTokens) public payable virtual override nonReentrant {
+    function claim(uint256 numTokens) 
+    public payable virtual override nonReentrant {
         if (!publicSaleActive) {
             revert PUBLIC_SALE_NOT_ACTIVE();
         }
@@ -102,7 +106,8 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
         _bulkMint(numTokens, msg.sender, msg.sender == owner());
     }
 
-    function whitelistClaim(uint256 index, uint256 numTokens, bytes32[] calldata merkleProof) public payable virtual override nonReentrant {
+    function whitelistClaim(uint256 index, uint256 numTokens, bytes32[] calldata merkleProof) 
+        public payable virtual override nonReentrant {
         if (!whitelistSaleActive) {
             revert WHITELIST_SALE_NOT_ACTIVE();
         }
@@ -139,9 +144,10 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
      * However you can "roll" the NFT state to reveal a Click Me Button.
      * When the button is pressed, then the Rick SVG is revealed and music plays in a loop.
      * If the user pays into rollState for a particular token, it will permanently switch 
-     to the "ricked" state where the click-me button will appear all the time. 
-     Separately, tokens that haven't been "ricked" will pseudo-randomly show the click-me button as 
-     well based on entropy from user address, and blockchain state.
+     * to the "ricked" state where the click-me button will appear all the time. 
+     * 
+     * Separately, tokens that haven't been "ricked" will pseudo-randomly show the click-me button as 
+     * well based on entropy from user address, and blockchain state.
      **/
     function rollState(uint256 tokenId) public payable override nonReentrant {
         if (_ricked[tokenId]) {
@@ -177,7 +183,7 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
         return string(abi.encodePacked(prefix, Base64.encode(assets.getAssetContentForId(_assetId))));
     }
 
-    function getInterestingContent() public view override returns (string memory) {
+    function getAudioContent() public view override returns (string memory) {
         return string(abi.encodePacked('data:audio/mp3;base64,', Base64.encode(assets.getAssetContentForId(0))));
     }
 

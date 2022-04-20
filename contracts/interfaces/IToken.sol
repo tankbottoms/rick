@@ -22,7 +22,7 @@ interface IToken {
 
     function getAssetBase64(uint64 _assetId, AssetDataType _assetType) external view returns (string memory);
 
-    function getInterestingContent() external view returns (string memory);
+    function getAudioContent() external view returns (string memory);
 
     function withdrawAll() external payable;
 
