@@ -824,7 +824,7 @@ __metadata:
     "@openzeppelin/hardhat-upgrades": ^1.8.2
     "@paulrberg/contracts": ^3.4.0
     "@typechain/hardhat": ^2.0.2
-    "@types/mocha": ^9.1.0
+    "@types/mocha": 9.1.0
     chai: ^4.3.4
     colors: ^1.4.0
     commander: ^9.2.0
@@ -837,6 +837,7 @@ __metadata:
     hardhat: ^2.3.0
     hardhat-deploy: ^0.11.4
     hardhat-gas-reporter: ^1.0.4
+    pako: ^2.0.4
     prettier: ^2.4.0
     prettier-plugin-solidity: ^1.0.0-beta.19
     rimraf: ^3.0.2
@@ -1449,7 +1450,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mocha@npm:^9.1.0":
+"@types/mocha@npm:9.1.0":
   version: 9.1.0
   resolution: "@types/mocha@npm:9.1.0"
   checksum: 21e1000dafcfe387c6812be41c44a47b48c27a74d5a70c3d5ef1bb5c88eadadfc74dba06e93f160e7248c8a57b3977b590f82504c801c9927816ecd4668023c0
@@ -9864,6 +9865,13 @@ __metadata:
   version: 2.2.0
   resolution: "p-try@npm:2.2.0"
   checksum: f8a8e9a7693659383f06aec604ad5ead237c7a261c18048a6e1b5b85a5f8a067e469aa24f5bc009b991ea3b058a87f5065ef4176793a200d4917349881216cae
+  languageName: node
+  linkType: hard
+
+"pako@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "pako@npm:2.0.4"
+  checksum: 82b9b0b99dd830c9103856a6dbd10f0cb2c8c32b9768184727ea381a99666de9a47a069d2e6efe6acf09336f363956b50835c196ef9311b34b7274d420eb0d88
   languageName: node
   linkType: hard
 

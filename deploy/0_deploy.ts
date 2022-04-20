@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers';
+import { BigNumber, Signer } from 'ethers';
 import { ethers } from 'hardhat';
 import { DeployFunction } from 'hardhat-deploy/types';
 import { readFileSync, readdirSync } from 'fs';
@@ -8,6 +8,7 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import 'colors';
 import { bufferTo32ArrayBuffer, bufferToArrayBuffer } from '../utils/array-buffer';
 import '../scripts/minify-svgs';
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 
 const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId }) => {
   const chainId = await getChainId();
@@ -26,10 +27,14 @@ const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId 
     args: [],
   });
 
-  console.log('Deployed at:', Storage.address);
+  console.log('Storage Deployed at:', Storage.address);
 
-  /************************************************************************************/
+  await uploadFiles(Storage.address, Storage.abi, (await ethers.getSigners())[0]);
+};
 
+export default func;
+
+export async function uploadFiles(address: string, abi: any, signer: SignerWithAddress) {
   const ASSETS = [
     `buffer/${process.env.FILE_PREPEND}rickRoll.mp3`,
     ...readdirSync(resolve(__dirname, '../buffer/minified-svgs'))
@@ -44,7 +49,7 @@ const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId 
     const buffer = readFileSync(resolve(__dirname, `..`, ASSET));
     const arrayBuffer = bufferToArrayBuffer(buffer);
     const arrayBuffer32 = bufferTo32ArrayBuffer(buffer);
-    const contract = new ethers.Contract(Storage.address, Storage.abi, (await ethers.getSigners())[0]);
+    const contract = new ethers.Contract(address, abi, signer);
 
     for (let i = 0; i < arrayBuffer32.length; i += CHUNK_SIZE) {
       const sliceKey = '0x' + Buffer.from(uuid4(), 'utf-8').toString('hex').slice(-64);
@@ -62,8 +67,4 @@ const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId 
 
     assetId++;
   }
-
-  console.log('Storage Done!');
-};
-
-export default func;
+}

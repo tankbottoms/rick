@@ -1,8 +1,6 @@
 import { BigNumber } from 'ethers';
-import { default as hre, ethers } from 'hardhat';
+import { default as hre } from 'hardhat';
 import { DeployFunction } from 'hardhat-deploy/types';
-import { writeFileSync } from 'fs';
-import { resolve } from 'path';
 
 const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId }) => {
   const chainId = await getChainId();
@@ -23,27 +21,13 @@ const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId 
 
   console.log('Deployed at:', Token.address);
 
-  /************************************************************************************/
-
-  const contract = new ethers.Contract(Token.address, Token.abi, (await ethers.getSigners())[0]);
-
-  /************************************************************************************/
-
   /*
    * bring the hot-svg-loader here
    * add svg UniSwap color background to project for a full color
    * rotating sentence is the chorus of the song
    * load half dozen of the merkaba svgs into image storage contract
    * added roles to the storage contract to allow for the creation of new assets
-   *
    */
-
-  console.log('getting asset...');
-
-  const base64URI = await contract.tokenUri(0);
-  // console.log('base64URI:', base64URI);
-  writeFileSync(resolve(__dirname, '../out.base64'), base64URI);
-  console.log('Token Done!');
 };
 
 export default func;
