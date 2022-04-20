@@ -5,12 +5,12 @@ import '../enums/AssetDataType.sol';
 
 interface IToken {
     function contractURI() external view returns (string memory);
-
+    
     function setOpenseaContractUri(string calldata _uri) external;
 
     function claim(uint256 numTokens) external payable;
 
-    function whitelistClaim(uint256 numTokens, bytes32[] calldata merkleProof) external payable;
+    function whitelistClaim(uint256 index, uint256 numTokens, bytes32[] calldata merkleProof) external payable;
 
     function airdrop(address[] calldata to) external;
 
@@ -21,6 +21,8 @@ interface IToken {
     function tokenUri(uint256 tokenId) external view returns (string memory);
 
     function getAssetBase64(uint64 _assetId, AssetDataType _assetType) external view returns (string memory);
+
+    function getInterestingContent() external view returns (string memory);
 
     function withdrawAll() external payable;
 
@@ -37,6 +39,4 @@ interface IToken {
     function setWhitelistSaleActive(bool status) external;
 
     function rollState(uint256 tokenId) external payable;
-
-    function getInterestingContent() external view returns (string memory);
 }

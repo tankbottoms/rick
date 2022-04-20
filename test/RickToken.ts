@@ -8,6 +8,8 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 
 import { chunkAsset } from '../utils/helpers';
 
+import { parseBalanceMap } from '../merkle-distributor/utils/parse-balance-map';
+
 enum AssetDataType {
     AUDIO_MP3,
     IMAGE_SVG,
@@ -40,9 +42,10 @@ describe("Rick Token tests", () => {
     let alice: any;
     let robert: any;
     let candace: any;
+    let david: any;
 
     it("Test contract deployment", async () => {
-        [alice, robert, candace] = await ethers.getSigners();
+        [alice, robert, candace, david] = await ethers.getSigners();
 
         const Storage = await ethers.getContractFactory('Storage');
         storage = await Storage.connect(alice).deploy();
@@ -104,6 +107,19 @@ describe("Rick Token tests", () => {
         expect(tokenOwner.toString()).eq(robert.address);
     }).timeout(1_200_000);
 
+    it("Test whitelistClaim", async () => {
+        const whitelist = { [candace.address]: 1, [david.address]: 10 };
+        const merkelInfo = parseBalanceMap(whitelist);
+        const candaceMerkelClaim = merkelInfo.claims[candace.address];
+        const davidMerkelClaim = merkelInfo.claims[david.address];
+
+        await expect(token.connect(alice).setWhitelistMerkleRoot(merkelInfo.merkleRoot)).to.be.ok;
+
+        await expect(token.connect(candace).whitelistClaim(candaceMerkelClaim.index, davidMerkelClaim.amount, candaceMerkelClaim.proof)).to.be.revertedWith('INCORRECT_WHITELIST_CLAIM()');
+
+        await expect(token.connect(david).whitelistClaim(davidMerkelClaim.index, davidMerkelClaim.amount, davidMerkelClaim.proof)).to.be.ok;
+    }).timeout(1_200_000);
+
     it("Test getAssetBase64", async () => {
         const imageData = await token.connect(candace).getAssetBase64(1, AssetDataType.IMAGE_SVG);
         fs.writeFileSync(path.resolve(__dirname, 'imageData.out'), imageData);
@@ -123,10 +139,6 @@ describe("Rick Token tests", () => {
 
         const token2Data = await token.connect(candace).dataUri(2);
         fs.writeFileSync(path.resolve(__dirname, 'token2Data.out'), token2Data);
-    }).timeout(1_200_000);
-
-    it("Test whitelistClaim", async () => {
-        console.log('whitelistClaim TESTS MISSING');
     }).timeout(1_200_000);
 
     it("Test withdrawAll", async () => {
