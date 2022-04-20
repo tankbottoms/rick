@@ -107,7 +107,7 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
             revert WHITELIST_SALE_NOT_ACTIVE();
         }
 
-        if (!MerkleProof.verify(merkleProof, whitelistMerkleRoot, keccak256(abi.encodePacked(msg.sender)))) {
+        if (!MerkleProof.verify(merkleProof, whitelistMerkleRoot, keccak256(abi.encodePacked(msg.sender, numTokens)))) {
             revert ADDRESS_NOT_IN_WHITELIST();
         }
 
@@ -175,6 +175,10 @@ contract Token is IToken, ERC721, ReentrancyGuard, Ownable {
         }
 
         return string(abi.encodePacked(prefix, Base64.encode(assets.getAssetContentForId(_assetId))));
+    }
+
+    function getInterestingContent() public view override returns (string memory) {
+        return string(abi.encodePacked('data:audio/mp3;base64,', Base64.encode(assets.getAssetContentForId(0))));
     }
 
     function withdrawAll() public payable override onlyOwner {
