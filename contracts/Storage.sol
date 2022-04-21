@@ -32,6 +32,7 @@ contract Storage is IStorage {
     // TODO: consider auto-increment on assetid
 
     event AssetCreated(uint64 _assetId);
+    event AssetAttributeSet(uint64 _assetId, string _attrName, );
 
     address private _owner;
     mapping(uint64 => Asset) private _assetList;
@@ -89,6 +90,8 @@ contract Storage is IStorage {
     ) public override onlyOwner {
         _assetList[_assetId]._attrs[_attrName]._type = _attrType;
         _assetList[_assetId]._attrs[_attrName]._value = _value;
+
+        emit AssetAttributeSet(_assetId, _attrName);
         // reserved:
         // uint32 _type
         // string _name
