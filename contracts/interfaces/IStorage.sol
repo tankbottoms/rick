@@ -1,7 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
+import '../enums/AssetAttrType.sol';
+
 interface IStorage {
+    struct Attr {
+        AssetAttrType _type;
+        bytes32[] _value;
+    }
+
     function createAsset(
         uint64 _assetId,
         bytes32 _assetKey,
@@ -18,7 +25,7 @@ interface IStorage {
     function setAssetAttribute(
         uint64 _assetId,
         string calldata _attrName,
-        uint32 _attrType,
+        AssetAttrType _attrType,
         bytes32[] calldata _value
     ) external;
 
@@ -30,5 +37,5 @@ interface IStorage {
 
     function getAssetSize(uint64 _assetId) external view returns (uint64);
 
-    function getAssetInfoAttribute(uint64 _assetId, string calldata _attr) external view returns (bytes memory);
+    function getAssetAttribute(uint64 _assetId, string calldata _attr) external view returns (Attr memory);
 }

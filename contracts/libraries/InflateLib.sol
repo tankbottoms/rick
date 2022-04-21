@@ -723,7 +723,7 @@ library InflateLib {
         return _codes(s, lencode, distcode);
     }
 
-    function puff(bytes calldata source, uint256 destlen)
+    function puff(bytes memory source, uint256 destlen)
         internal
         pure
         returns (ErrorCode, bytes memory)

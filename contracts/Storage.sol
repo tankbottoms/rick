@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import './interfaces/IStorage.sol';
 import '@0xsequence/sstore2/contracts/SSTORE2Map.sol';
+
+import './interfaces/IStorage.sol';
+import './enums/AssetAttrType.sol';
+import './libraries/InflateLib.sol';
 
 error ERR_CHUNK_SIZE_LIMIT();
 error ERR_ASSET_EXISTS();
 error ERR_ASSET_MISSING();
+error ERR_INFLATE_FAILED();
 
 contract Storage is IStorage {
     uint32 private constant CHUNK_SIZE = 24 * 1024;
@@ -14,11 +18,6 @@ contract Storage is IStorage {
     modifier onlyOwner() {
         require(_owner == msg.sender, 'msg.sender!=_owner');
         _;
-    }
-
-    struct Attr {
-        uint32 _type;
-        bytes32[] _value;
     }
 
     struct Asset {
@@ -32,7 +31,7 @@ contract Storage is IStorage {
     // TODO: consider name -> id map
     // TODO: consider auto-increment on assetid
 
-    event AssetCreated(bytes32 _assetId);
+    event AssetCreated(uint64 _assetId);
 
     address private _owner;
     mapping(uint64 => Asset) private _assetList;
@@ -62,7 +61,7 @@ contract Storage is IStorage {
         _assetList[_assetId]._byteSize = uint64(fileSizeInBytes);
 
         _assetCount++;
-        emit AssetCreated(_assetKey);
+        emit AssetCreated(_assetId);
     }
 
     function appendAssetContent(
@@ -85,17 +84,25 @@ contract Storage is IStorage {
     function setAssetAttribute(
         uint64 _assetId,
         string calldata _attrName,
-        uint32 _attrType,
+        AssetAttrType _attrType,
         bytes32[] calldata _value
     ) public override onlyOwner {
+        _assetList[_assetId]._attrs[_attrName]._type = _attrType;
+        _assetList[_assetId]._attrs[_attrName]._value = _value;
         // reserved:
-        // uint32 _type;
-        // string _name;
-        // uint64 _timestamp;
+        // uint32 _type
+        // string _name
+        // uint64 _timestamp
+        // uint64 _inflatedSize
     }
 
-    function getAssetContentForId(uint64 _assetId) public view override returns (bytes memory _content) {
-        _content = new bytes(_assetList[_assetId]._byteSize);
+    function getAssetContentForId(uint64 _assetId) public view override returns (bytes memory) {
+        uint64 inflatedSize = 0;
+        if (_assetList[_assetId]._attrs['_inflatedSize']._value.length > 0) {
+            inflatedSize = uint64(_bytesToUint(abi.encode(_assetList[_assetId]._attrs['_inflatedSize']._value)));
+        }
+
+        bytes memory _content = new bytes(_assetList[_assetId]._byteSize);
         uint64 partCount = uint64(_assetList[_assetId]._nodes.length);
 
         uint64 offset = 0;
@@ -110,6 +117,18 @@ contract Storage is IStorage {
                 offset += 32;
             }
         }
+
+        if (inflatedSize > 0) {
+            InflateLib.ErrorCode err;
+            bytes memory result;
+            (err, result) = InflateLib.puff(_content, inflatedSize);
+
+            if (err != InflateLib.ErrorCode.ERR_NONE) { revert ERR_INFLATE_FAILED(); }
+
+            return result;
+        }
+
+        return _content;
     }
 
     function getAssetKeysForId(uint64 _assetId) public view override returns (bytes32[] memory) {
@@ -124,7 +143,17 @@ contract Storage is IStorage {
         return _assetList[_assetId]._byteSize;
     }
 
-    function getAssetInfoAttribute(uint64 _assetId, string calldata _attr) public view override returns (bytes memory) {
-        return abi.encode(_assetList[_assetId]._attrs[_attr]);
+    function getAssetAttribute(uint64 _assetId, string calldata _attrName) public view override returns (Attr memory _attr) {
+        _attr = _assetList[_assetId]._attrs[_attrName];
+    }
+
+    function _bytesToUint(bytes memory b) internal pure returns (uint256) {
+        uint256 number;
+
+        for (uint i=0; i < b.length; i++) {
+            number = number + uint(uint8(b[i]))*(2**(8*(b.length-(i+1))));
+        }
+
+        return number;
     }
 }

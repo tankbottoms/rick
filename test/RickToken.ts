@@ -6,7 +6,7 @@ import uuid4 from 'uuid4';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 
-import { chunkAsset } from '../utils/helpers';
+import { chunkAsset, chunkDeflate, chunkString, reconstituteString, smallIntToBytes32 } from '../utils/helpers';
 
 import { parseBalanceMap } from '../merkle-distributor/utils/parse-balance-map';
 
@@ -16,11 +16,28 @@ enum AssetDataType {
     IMAGE_PNG
 }
 
+enum AssetAttrType {
+    STRING_VALUE,
+    BOOLEAN_VALUE,
+    UINT_VALUE,
+    INT_VALUE,
+    TIMESTAMP_VALUE
+}
+
 async function loadAssets(storage: any, signer: SignerWithAddress, assets: string[]) {
     let assetId = 0;
 
     for (const assetPath of assets) {
-        const assetParts = chunkAsset(assetPath);
+        let assetParts;
+        let inflatedSize = 0;
+
+        if (assetPath.endsWith('svg')) {
+            assetParts = chunkDeflate(assetPath);
+            inflatedSize = assetParts.inflatedSize;
+        } else {
+            assetParts = chunkAsset(assetPath);
+            inflatedSize = assetParts.length;
+        }
 
         let sliceKey = '0x' + Buffer.from(uuid4(), 'utf-8').toString('hex').slice(-64);
         let tx: TransactionResponse = await storage.connect(signer).createAsset(assetId, sliceKey, assetParts.parts[0], assetParts.length, { gasLimit: 5_000_000 });
@@ -30,6 +47,14 @@ async function loadAssets(storage: any, signer: SignerWithAddress, assets: strin
             sliceKey = '0x' + Buffer.from(uuid4(), 'utf-8').toString('hex').slice(-64);
             tx = await storage.connect(signer).appendAssetContent(assetId, sliceKey, assetParts.parts[i], { gasLimit: 5_000_000 });
             await tx.wait();
+        }
+
+        if (inflatedSize != assetParts.length) {
+            tx = await storage.connect(signer).setAssetAttribute(0, '_inflatedSize', AssetAttrType.UINT_VALUE, [smallIntToBytes32(inflatedSize)]);
+            await tx.wait();
+            console.log(`added ${assetPath}, compressed ${assetParts.inflatedSize} to ${assetParts.length}`);
+        } else {
+            console.log(`added ${assetPath}, ${assetParts.length}`);
         }
 
         assetId++;
@@ -56,10 +81,10 @@ describe("Rick Token tests", () => {
         await token.deployed();
 
         const audio = [path.join('buffer', 'rickRoll.mp3')];
-        const svg = fs.readdirSync(path.resolve(__dirname, '..', 'buffer', 'minified-svgs'))
+        const svg = fs.readdirSync(path.resolve(__dirname, '..', 'buffer', 'svgs'))
             .filter((filename) => filename.endsWith('.svg'))
             .sort((a, b) => Number(a.slice(0, -4)) - Number(b.slice(0, -4)))
-            .map((filename) => path.join('buffer', 'minified-svgs', filename));
+            .map((filename) => path.join('buffer', 'svgs', filename));
 
         await loadAssets(storage, alice, [...audio, ...svg]);
     }).timeout(1_200_000);
@@ -143,6 +168,17 @@ describe("Rick Token tests", () => {
 
     it("Test withdrawAll", async () => {
         console.log('withdrawAll TESTS MISSING');
+    }).timeout(1_200_000);
+
+    it("Test Store attributes", async () => {
+        await storage.connect(alice).setAssetAttribute(0, '_name', AssetAttrType.STRING_VALUE, chunkString('rickroll.mp3'));
+        let tx = await storage.connect(candace).getAssetAttribute(0, '_name');
+        expect(reconstituteString(tx['_value'])).to.equal('rickroll.mp3');
+
+        // const smallInt = 9807968574;
+        // await storage.connect(alice).setAssetAttribute(1, '_inflatedSize', AssetAttrType.UINT_VALUE, [smallIntToBytes32(smallInt)]);
+        // tx = await storage.connect(candace).getAssetAttribute(0, '_inflatedSize');
+        // expect(parseInt(tx['_value'], 16)).to.equal(smallInt);
     }).timeout(1_200_000);
 });
 
