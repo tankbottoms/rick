@@ -32,7 +32,7 @@ contract Storage is IStorage {
     // TODO: consider auto-increment on assetid
 
     event AssetCreated(uint64 _assetId);
-    event AssetAttributeSet(uint64 _assetId, string _attrName, );
+    event AssetAttributeSet(uint64 _assetId, string _attrName);
 
     address private _owner;
     mapping(uint64 => Asset) private _assetList;
@@ -102,7 +102,7 @@ contract Storage is IStorage {
     function getAssetContentForId(uint64 _assetId) public view override returns (bytes memory) {
         uint64 inflatedSize = 0;
         if (_assetList[_assetId]._attrs['_inflatedSize']._value.length > 0) {
-            inflatedSize = uint64(_bytesToUint(abi.encode(_assetList[_assetId]._attrs['_inflatedSize']._value)));
+            inflatedSize = uint64(uint256(_assetList[_assetId]._attrs['_inflatedSize']._value[0]));
         }
 
         bytes memory _content = new bytes(_assetList[_assetId]._byteSize);

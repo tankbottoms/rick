@@ -9,6 +9,7 @@ import 'colors';
 import { bufferTo32ArrayBuffer, bufferToArrayBuffer } from '../utils/array-buffer';
 import '../scripts/minify-svgs';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import pako from 'pako';
 
 const func: DeployFunction = async ({ getNamedAccounts, deployments, getChainId }) => {
   const chainId = await getChainId();
@@ -44,11 +45,18 @@ export async function uploadFiles(address: string, abi: any, signer: SignerWithA
   ];
 
   let assetId = 0;
+  let totalSavedBytes = 0;
   for (const ASSET of ASSETS) {
     const CHUNK_SIZE = Math.floor((1024 * 24) / 32); // 24KB
-    const buffer = readFileSync(resolve(__dirname, `..`, ASSET));
-    const arrayBuffer = bufferToArrayBuffer(buffer);
-    const arrayBuffer32 = bufferTo32ArrayBuffer(buffer);
+    let buffer = readFileSync(resolve(__dirname, `..`, ASSET));
+    let arrayBuffer = bufferToArrayBuffer(buffer);
+    let arrayBuffer32 = bufferTo32ArrayBuffer(buffer);
+    if (ASSET.endsWith('.svg')) {
+      const uncompressed = Uint8Array.from(buffer);
+      arrayBuffer = pako.deflateRaw(uncompressed, { level: 9 });
+      arrayBuffer32 = bufferTo32ArrayBuffer(Buffer.from(arrayBuffer));
+      totalSavedBytes += buffer.length - arrayBuffer.length;
+    }
     const contract = new ethers.Contract(address, abi, signer);
 
     for (let i = 0; i < arrayBuffer32.length; i += CHUNK_SIZE) {
@@ -56,6 +64,7 @@ export async function uploadFiles(address: string, abi: any, signer: SignerWithA
 
       const from = `${i * 32}`.padStart(6, '0');
       const to = `${Math.min(arrayBuffer.length, (i + CHUNK_SIZE) * 32)}`.padStart(6, '0');
+
       console.log(`uploading ${ASSET} from ${from} to ${to} [of total ${arrayBuffer.length} bytes]`.yellow);
 
       const args: any[] = [BigNumber.from(assetId), sliceKey, arrayBuffer32.slice(i, i + CHUNK_SIZE)];
@@ -65,6 +74,17 @@ export async function uploadFiles(address: string, abi: any, signer: SignerWithA
       await assetAppendTxn.wait();
     }
 
+    if (ASSET.endsWith('.svg')) {
+      const setInflateSizeTxn: TransactionResponse = await contract.setAssetAttribute(assetId, '_inflatedSize', 2, [
+        `0x${buffer.length.toString(16).padStart(64, '0')}`,
+      ]);
+      await setInflateSizeTxn.wait();
+    }
+
+
+
     assetId++;
   }
+
+  console.log(`SAVED`, totalSavedBytes, 'bytes');
 }
