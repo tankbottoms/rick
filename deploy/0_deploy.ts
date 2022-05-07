@@ -37,9 +37,9 @@ export default func;
 
 export async function uploadFiles(address: string, abi: any, signer: SignerWithAddress) {
   const ASSETS = [
-    `buffer/${process.env.FILE_PREPEND}rickRoll.mp3`,
+    // `buffer/${process.env.FILE_PREPEND}rickRoll.mp3`,
     ...readdirSync(resolve(__dirname, '../buffer/minified-svgs'))
-      .filter((filename) => filename.endsWith('.svg'))
+      .filter((filename) => filename.endsWith('.svg') || filename.endsWith('.html'))
       .sort((a, b) => Number(a.replace('.svg', '')) - Number(b.replace('.svg', '')))
       .map((filename) => `buffer/minified-svgs/${filename}`),
   ];
@@ -51,7 +51,7 @@ export async function uploadFiles(address: string, abi: any, signer: SignerWithA
     let buffer = readFileSync(resolve(__dirname, `..`, ASSET));
     let arrayBuffer = bufferToArrayBuffer(buffer);
     let arrayBuffer32 = bufferTo32ArrayBuffer(buffer);
-    if (ASSET.endsWith('.svg')) {
+    if (ASSET.endsWith('.svg') || ASSET.endsWith('.html')) {
       const uncompressed = Uint8Array.from(buffer);
       arrayBuffer = pako.deflateRaw(uncompressed, { level: 9 });
       arrayBuffer32 = bufferTo32ArrayBuffer(Buffer.from(arrayBuffer));
@@ -74,14 +74,12 @@ export async function uploadFiles(address: string, abi: any, signer: SignerWithA
       await assetAppendTxn.wait();
     }
 
-    if (ASSET.endsWith('.svg')) {
+    if (ASSET.endsWith('.svg') || ASSET.endsWith('.html')) {
       const setInflateSizeTxn: TransactionResponse = await contract.setAssetAttribute(assetId, '_inflatedSize', 2, [
         `0x${buffer.length.toString(16).padStart(64, '0')}`,
       ]);
       await setInflateSizeTxn.wait();
     }
-
-
 
     assetId++;
   }

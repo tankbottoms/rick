@@ -8,8 +8,10 @@ import { writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { uploadFiles } from '../deploy/0_deploy';
 import { TransactionResponse } from '@ethersproject/abstract-provider';
+import minify from '../scripts/minify-svgs';
 
-const SOURCE = path.join(__dirname, '..', 'contracts', 'Token.sol');
+const SOURCE = path.join(__dirname, '..', 'contracts');
+const ASSETS = path.join(__dirname, '..', 'buffer', 'svgs');
 const webpage = (content) => `
 <html>
 <title>Hot Chain SVG</title>
@@ -23,8 +25,7 @@ sse.addEventListener('change', () => window.location.reload());
 
 async function update() {
   try {
-    await new Promise((r) => fs.rm(
-      path.resolve(__dirname, '../deployments/hardhat'), { recursive: true }, () => r(true)));
+    await new Promise((r) => fs.rm(path.resolve(__dirname, '../deployments/hardhat'), { recursive: true }, () => r(true)));
   } catch (e) {}
 
   await hre.deployments.delete('Token');
@@ -44,8 +45,7 @@ async function update() {
   const tokenContract = new ethers.Contract(Token.address, TokenArtifact.abi, signer);
 
   await (await tokenContract.setSaleActive(true)).wait();
-  const txn: TransactionResponse = await tokenContract.claim(
-    1, { value: ethers.utils.parseEther('0.04') });
+  const txn: TransactionResponse = await tokenContract.claim(1, { value: ethers.utils.parseEther('0.04') });
   await txn.wait();
   console.log('claimed\nGetting tokenUri...');
   const base64URI: string = await tokenContract.dataUri(0);
@@ -63,23 +63,24 @@ async function main() {
     try {
       const json = await promise;
       const audio = json.animation_url.split('#')[1];
-      const html = Buffer.from(
-        json.animation_url.split('#')[0].replace(
-          'data:text/html;base64,', ''), 'base64').toString();
-      return `${html}<script>location.href="/#${audio}"</script>`;
+      const html = Buffer.from(json.animation_url.split('#')[0].replace('data:text/html;base64,', ''), 'base64').toString();
+      return `${html}`;
     } catch (error: any) {
       return `<pre>${JSON.stringify(error, null, '  ')}</pre>`;
     }
   });
-  fs.watch(path.dirname(SOURCE), () => {
-    promise = update();
-    notify();
+  [SOURCE, ASSETS].map((src, index) => {
+    fs.watch(src, () => {
+      promise = update();
+      notify();
+      if (index === 1) minify();
+    });
+    console.log('Watching', src);
   });
   notify();
 
   await promise;
 
-  console.log('Watching', path.dirname(SOURCE));
   console.log('Serving  http://localhost:9901/');
   await new Promise(() => null);
 }
